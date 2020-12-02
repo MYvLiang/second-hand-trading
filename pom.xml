@@ -52,9 +52,7 @@
 
     <modules>
         <module>eureka-server</module>
-<!--        <module>product-data-service</module>-->
-<!--        <module>product-view-service</module>-->
-<!--        <module>zuul</module>-->
+        <module>zuul</module>
     </modules>
 
 </project>

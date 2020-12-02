@@ -11,14 +11,14 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 @EnableZuulProxy
 @EnableEurekaClient
 @EnableDiscoveryClient
-public class ProductServiceZuulApplication {
+public class ServiceZuulApplication {
 	public static void main(String[] args) {
     	int port = 8040;
 		if(!NetUtil.isUsableLocalPort(port)) {
 			System.err.printf("端口%d被占用了，无法启动%n", port );
     		System.exit(1);
     	}
-        new SpringApplicationBuilder(ProductServiceZuulApplication.class).properties("server.port=" + port).run(args);
+        new SpringApplicationBuilder(ServiceZuulApplication.class).properties("server.port=" + port).run(args);
 
 	}
 }
