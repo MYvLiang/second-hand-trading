@@ -11,6 +11,9 @@ Vue.prototype.$api = api;
 
 Vue.config.productionTip = false;
 
+Vue.use(ElementUI, {
+    size: 'medium'
+});
 new Vue({
     router,
     render: h => h(App)
