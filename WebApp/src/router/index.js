@@ -23,6 +23,11 @@ export default new Router({
             path: '/me',
             component: () => import('../components/page/me.vue'),
             meta: { title: '二手交易平台' }
+        },
+        {
+            path: '/message',
+            component: () => import('../components/page/message.vue'),
+            meta: { title: '二手交易平台' }
         }
     ]
 });

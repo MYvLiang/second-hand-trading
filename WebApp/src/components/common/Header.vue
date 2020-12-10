@@ -10,9 +10,9 @@
                 </el-input>
             </div>
             <el-button type="primary" icon="el-icon-plus">发布闲置</el-button>
-            <el-button type="primary" icon="el-icon-chat-dot-round">消息</el-button>
+            <el-button type="primary" icon="el-icon-chat-dot-round" @click="toMessage">消息</el-button>
             <el-dropdown trigger="click">
-                <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+                <el-avatar style="cursor:pointer;" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item><div @click="toMe">个人中心</div></el-dropdown-item>
                     <el-dropdown-item divided style="color: red;">退出登录</el-dropdown-item>
@@ -43,6 +43,11 @@
             toMe() {
                 if ('/me' !== this.$route.path) {
                     this.$router.push({path: '/me'});
+                }
+            },
+            toMessage(){
+                if ('/message' !== this.$route.path) {
+                    this.$router.push({path: '/message'});
                 }
             }
         }

@@ -78,10 +78,10 @@
                                         fit="contain"></el-image>
                                 <div class="idle-container-list-item-text">
                                     <div class="idle-container-list-title">
-                                        {{index}}{{item}}称名称名称名称名称名称名称名称名称名称名称名称名称名称名称名称名称名称名称名称名称名称名称名称名
+                                        {{index}}{{item}}称名称名称名称名称名称名称名称名称名称名称名称名称名称名fhydhrtgfgdsgsdfgsdfhsfgjhdgjhdffhydhrtgfgdsgsdfgsdfhsfgjhdgjhdf
                                     </div>
                                     <div class="idle-container-list-idle-details">
-                                        详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情
+                                        详情详情详情详情详情详情详情详情详情详情详情详fagfagsdfgsdfgdfgsfhydhrtgfgdsgsdfgfhydhrtgfgdsgsdfgsdfhsfgjhdgjhdffhydhrtgfgdsgsdfgsdfhsfgjhdgjhdfsdfhsfgjhdgjhdfjdghgfhdf
                                     </div>
                                     <div class="idle-container-list-idle-time">2020-10-10</div>
                                     <div class="idle-prive">￥50 {{activeName==='5'?orderStatus:''}}</div>
@@ -306,6 +306,7 @@
 
     .idle-container-list-item {
         border-bottom: 1px solid #eeeeee;
+        cursor:pointer;
     }
 
     .idle-container-list-item:last-child {
@@ -328,9 +329,8 @@
         font-weight: 600;
         font-size: 18px;
         overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 
     .idle-container-list-idle-details {
@@ -338,9 +338,8 @@
         color: #555555;
         padding-top: 5px;
         overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 
     .idle-container-list-idle-time {

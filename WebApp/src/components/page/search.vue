@@ -12,7 +12,7 @@
                                         src="https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/772352677/O1CN011jxMrP1Ve6uWORNF2_!!0-item_pic.jpg_580x580Q90.jpg_.webp"
                                         fit="contain"></el-image>
                                 <div class="idle-title">
-                                    {{index}}{{idle}}大衣大衣
+                                    {{index}}{{idle}}fsfasdfasdgfdasgsdfhsghfsfsfasdfasdgfdasgsdfhsghfsfhydhrtgfgdsgsdfgsdfhsfgjhdgjhdffhydhrtgfgdsgsdfgsdfhsfgjhdgjhdffhydhrtgfgdsgsdfgsdfhsfgjhdgjhdf
                                 </div>
                                 <el-row style="margin: 5px 10px;">
                                     <el-col :span="12">
@@ -113,9 +113,8 @@
         font-size: 18px;
         font-weight: 600;
         overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
+        white-space: nowrap;
+        text-overflow: ellipsis;
         margin: 10px;
     }
 
