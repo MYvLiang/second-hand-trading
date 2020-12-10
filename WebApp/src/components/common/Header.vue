@@ -1,10 +1,12 @@
 <template>
     <div class="header">
         <div class="header-container">
-            <div class="app-name">二手交易平台</div>
+            <div class="app-name">
+                <router-link to="/">二手交易平台</router-link>
+            </div>
             <div class="search-container">
-                <el-input placeholder="搜闲置..." v-model="input3">
-                    <el-button slot="append" icon="el-icon-search"></el-button>
+                <el-input placeholder="搜闲置..." v-model="searchValue" @change="searchIdle">
+                    <el-button slot="append" icon="el-icon-search" @click="searchIdle"></el-button>
                 </el-input>
             </div>
             <el-button type="primary" icon="el-icon-plus">发布闲置</el-button>
@@ -12,7 +14,7 @@
             <el-dropdown trigger="click">
                 <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>个人中心</el-dropdown-item>
+                    <el-dropdown-item><div @click="toMe">个人中心</div></el-dropdown-item>
                     <el-dropdown-item divided style="color: red;">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
@@ -23,13 +25,27 @@
 
     export default {
         name: 'Header',
+        props: ['searchInput'],
         data() {
             return {
-                input3:''
+                searchValue: this.searchInput
             };
         },
-        computed: {},
-        methods: {}
+        methods: {
+            searchIdle() {
+                if ('/search' !== this.$route.path) {
+                    this.$router.push({path: '/search', query: {searchValue: this.searchValue}});
+                } else {
+                    this.$router.replace({path: '/search', query: {searchValue: this.searchValue}});
+                }
+
+            },
+            toMe() {
+                if ('/me' !== this.$route.path) {
+                    this.$router.push({path: '/me'});
+                }
+            }
+        }
     };
 </script>
 <style scoped>
@@ -55,12 +71,13 @@
         justify-content: space-between;
     }
 
-    .app-name {
+    .app-name a {
         color: #409EFF;
         font-size: 24px;
+        text-decoration: none;
     }
 
-    .search-container{
+    .search-container {
         width: 300px;
     }
 </style>

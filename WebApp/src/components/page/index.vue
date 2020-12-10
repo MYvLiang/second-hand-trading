@@ -17,7 +17,7 @@
                                     src="https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/772352677/O1CN011jxMrP1Ve6uWORNF2_!!0-item_pic.jpg_580x580Q90.jpg_.webp"
                                     fit="contain"></el-image>
                             <div class="idle-title">
-                                {{index}}{{idle}}白哦反对事件发生六点九分零四大量白哦反对事件发生六点九分零四大量
+                                {{index}}{{idle}}大衣
                             </div>
                             <el-row style="margin: 5px 10px;">
                                 <el-col :span="12">
@@ -43,7 +43,7 @@
                 <el-pagination
                         background
                         @current-change="handleCurrentChange"
-                        :current-page.sync="currentPage3"
+                        :current-page.sync="currentPage"
                         :page-size="40"
                         layout="prev, pager, next, jumper"
                         :total="1000">
@@ -70,7 +70,7 @@
             return {
                 labelName: '0',
                 idleList: [1, 2, 3, 4, 5, 6, 8, 9, 9, 8, 5, 5],
-                currentPage3: 1
+                currentPage: 1
             };
         },
         methods: {
@@ -87,7 +87,7 @@
 
 <style scoped>
     .idle-card {
-        height: 320px;
+        height: 300px;
         border: #eeeeee solid 1px;
         margin-bottom: 15px;
         cursor:pointer;
@@ -106,7 +106,7 @@
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 1;
         margin: 10px;
     }
 

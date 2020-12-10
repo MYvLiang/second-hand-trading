@@ -13,6 +13,16 @@ export default new Router({
             path: '/index',
             component: () => import('../components/page/index.vue'),
             meta: { title: '二手交易平台' }
+        },
+        {
+            path: '/search',
+            component: () => import('../components/page/search.vue'),
+            meta: { title: '二手交易平台' }
+        },
+        {
+            path: '/me',
+            component: () => import('../components/page/me.vue'),
+            meta: { title: '二手交易平台' }
         }
     ]
 });
