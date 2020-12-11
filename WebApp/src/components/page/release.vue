@@ -1,7 +1,7 @@
 <template>
     <div>
-        <v-head></v-head>
-        <v-body>
+        <app-head></app-head>
+        <app-body>
             <div class="release-idle-container">
                 <div class="release-idle-container-title">发布闲置</div>
                 <div class="release-idle-container-form">
@@ -59,25 +59,28 @@
                             <i class="el-icon-plus"></i>
                         </el-upload>
                     </div>
+                    <div style="display: flex;justify-content: center;margin-top: 30px;">
+                        <el-button type="primary" plain>确认发布</el-button>
+                    </div>
                 </div>
             </div>
-            <v-foot></v-foot>
-        </v-body>
+            <app-foot></app-foot>
+        </app-body>
     </div>
 </template>
 
 <script>
-    import vHead from '../common/Header.vue';
-    import vBody from '../common/PageBody.vue'
-    import vFoot from '../common/Foot.vue'
+    import AppHead from '../common/AppHeader.vue';
+    import AppBody from '../common/AppPageBody.vue'
+    import AppFoot from '../common/AppFoot.vue'
     import options from '../common/country-data.js'
 
     export default {
         name: "release",
         components: {
-            vHead,
-            vBody,
-            vFoot
+            AppHead,
+            AppBody,
+            AppFoot
         },
         data() {
             return {

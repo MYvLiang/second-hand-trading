@@ -1,7 +1,7 @@
 <template>
     <div>
-        <v-head :searchInput="searchValue"></v-head>
-        <v-body>
+        <app-head :searchInput="searchValue"></app-head>
+        <app-body>
             <div style="min-height: 80vh;">
                 <div style="margin: 0 20px;">
                     <el-row :gutter="30">
@@ -45,22 +45,22 @@
                     </el-pagination>
                 </div>
             </div>
-            <v-foot></v-foot>
-        </v-body>
+            <app-foot></app-foot>
+        </app-body>
     </div>
 </template>
 
 <script>
-    import vHead from '../common/Header.vue';
-    import vBody from '../common/PageBody.vue'
-    import vFoot from '../common/Foot.vue'
+    import AppHead from '../common/AppHeader.vue';
+    import AppBody from '../common/AppPageBody.vue'
+    import AppFoot from '../common/AppFoot.vue'
 
     export default {
         name: "search",
         components: {
-            vHead,
-            vBody,
-            vFoot
+            AppHead,
+            AppBody,
+            AppFoot
         },
         data() {
             return {

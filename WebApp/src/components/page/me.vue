@@ -1,7 +1,7 @@
 <template>
     <div>
-        <v-head></v-head>
-        <v-body>
+        <app-head></app-head>
+        <app-body>
             <div v-show="!eidtAddress">
                 <div class="user-info-container">
                     <div class="user-info-details">
@@ -165,23 +165,23 @@
                     </el-table>
                 </div>
             </div>
-            <v-foot></v-foot>
-        </v-body>
+            <app-foot></app-foot>
+        </app-body>
     </div>
 </template>
 
 <script>
-    import vHead from '../common/Header.vue';
-    import vBody from '../common/PageBody.vue'
-    import vFoot from '../common/Foot.vue'
+    import AppHead from '../common/AppHeader.vue';
+    import AppBody from '../common/AppPageBody.vue'
+    import AppFoot from '../common/AppFoot.vue'
     import options from '../common/country-data.js'
 
     export default {
         name: "me",
         components: {
-            vHead,
-            vBody,
-            vFoot
+            AppHead,
+            AppBody,
+            AppFoot
         },
         data() {
             return {

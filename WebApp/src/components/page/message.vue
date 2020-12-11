@@ -1,7 +1,7 @@
 <template>
     <div>
-        <v-head></v-head>
-        <v-body>
+        <app-head></app-head>
+        <app-body>
             <div class="message-container">
                 <div class="message-container-title">我的消息</div>
                 <div v-for="(item,index) in [1,2,3,4]" class="message-container-list">
@@ -24,22 +24,22 @@
                     </div>
                 </div>
             </div>
-            <v-foot></v-foot>
-        </v-body>
+            <app-foot></app-foot>
+        </app-body>
     </div>
 </template>
 
 <script>
-    import vHead from '../common/Header.vue';
-    import vBody from '../common/PageBody.vue'
-    import vFoot from '../common/Foot.vue'
+    import AppHead from '../common/AppHeader.vue';
+    import AppBody from '../common/AppPageBody.vue'
+    import AppFoot from '../common/AppFoot.vue'
 
     export default {
         name: "message",
         components: {
-            vHead,
-            vBody,
-            vFoot
+            AppHead,
+            AppBody,
+            AppFoot
         },
         data(){
             return{

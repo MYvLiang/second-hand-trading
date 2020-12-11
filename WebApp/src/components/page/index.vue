@@ -1,7 +1,7 @@
 <template>
     <div>
-        <v-head></v-head>
-        <v-body>
+        <app-head></app-head>
+        <app-body>
             <el-tabs v-model="labelName" type="card" @tab-click="handleClick">
                 <el-tab-pane label="全部" name="0"></el-tab-pane>
                 <el-tab-pane label="类别1" name="1"></el-tab-pane>
@@ -49,22 +49,22 @@
                         :total="1000">
                 </el-pagination>
             </div>
-            <v-foot></v-foot>
-        </v-body>
+            <app-foot></app-foot>
+        </app-body>
     </div>
 </template>
 
 <script>
-    import vHead from '../common/Header.vue';
-    import vBody from '../common/PageBody.vue'
-    import vFoot from '../common/Foot.vue'
+    import AppHead from '../common/AppHeader.vue';
+    import AppBody from '../common/AppPageBody.vue'
+    import AppFoot from '../common/AppFoot.vue'
 
     export default {
         name: "index",
         components: {
-            vHead,
-            vBody,
-            vFoot
+            AppHead,
+            AppBody,
+            AppFoot
         },
         data() {
             return {
