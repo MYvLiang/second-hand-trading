@@ -28,6 +28,11 @@ export default new Router({
             path: '/message',
             component: () => import('../components/page/message.vue'),
             meta: { title: '二手交易平台' }
+        },
+        {
+            path: '/release',
+            component: () => import('../components/page/release.vue'),
+            meta: { title: '二手交易平台' }
         }
     ]
 });

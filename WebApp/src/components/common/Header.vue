@@ -9,7 +9,7 @@
                     <el-button slot="append" icon="el-icon-search" @click="searchIdle"></el-button>
                 </el-input>
             </div>
-            <el-button type="primary" icon="el-icon-plus">发布闲置</el-button>
+            <el-button type="primary" icon="el-icon-plus"  @click="toRelease">发布闲置</el-button>
             <el-button type="primary" icon="el-icon-chat-dot-round" @click="toMessage">消息</el-button>
             <el-dropdown trigger="click">
                 <el-avatar style="cursor:pointer;" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
@@ -48,6 +48,11 @@
             toMessage(){
                 if ('/message' !== this.$route.path) {
                     this.$router.push({path: '/message'});
+                }
+            },
+            toRelease(){
+                if ('/release' !== this.$route.path) {
+                    this.$router.push({path: '/release'});
                 }
             }
         }
