@@ -11,7 +11,7 @@
             <div style="margin: 0 20px;">
                 <el-row :gutter="30">
                     <el-col :span="6" v-for="(idle,index) in idleList">
-                        <div class="idle-card">
+                        <div class="idle-card" @click="toDetails">
                             <el-image
                                     style="width: 100%; height: 160px"
                                     src="https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/772352677/O1CN011jxMrP1Ve6uWORNF2_!!0-item_pic.jpg_580x580Q90.jpg_.webp"
@@ -80,6 +80,9 @@
             },
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
+            },
+            toDetails(){
+                this.$router.push({path: '/details'});
             }
         }
     }

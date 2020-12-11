@@ -4,7 +4,7 @@
         <app-body>
             <div class="message-container">
                 <div class="message-container-title">我的消息</div>
-                <div v-for="(item,index) in [1,2,3,4]" class="message-container-list">
+                <div v-for="(item,index) in [1,2,3,4]" class="message-container-list" @click="toDetails">
                     <div class="message-container-list-left">
                         <el-image
                                 style="width: 55px; height: 55px;border-radius: 5px;"
@@ -47,7 +47,9 @@
             };
         },
         methods:{
-
+            toDetails(){
+                this.$router.push({path: '/details'});
+            }
         }
     }
 </script>

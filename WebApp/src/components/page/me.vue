@@ -71,7 +71,7 @@
                     </el-tabs>
                     <div class="idle-container-list">
                         <div v-for="(item,index) in dataList[activeName]" class="idle-container-list-item">
-                            <div class="idle-container-list-item-detile">
+                            <div class="idle-container-list-item-detile" @click="toDetails">
                                 <el-image
                                         style="width: 100px; height: 100px;"
                                         src="https://pic2.zhimg.com/v2-22d4ebddd475020919bb12aa3a6ddaf7_xs.jpg?source=1940ef5c"
@@ -255,6 +255,9 @@
             },
             handleDelete(index, row) {
                 console.log(index, row);
+            },
+            toDetails(){
+                this.$router.push({path: '/details'});
             }
         }
     }

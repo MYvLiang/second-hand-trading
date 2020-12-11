@@ -33,6 +33,11 @@ export default new Router({
             path: '/release',
             component: () => import('../components/page/release.vue'),
             meta: { title: '二手交易平台' }
+        },
+        {
+            path: '/details',
+            component: () => import('../components/page/idle-details.vue'),
+            meta: { title: '二手交易平台' }
         }
     ]
 });

@@ -12,10 +12,10 @@
                     <el-input
                             class="release-idle-detiles-text"
                             type="textarea"
-                            :autosize="{ minRows: 3, maxRows: 7}"
+                            autosize
                             placeholder="请输入闲置的详细介绍..."
                             v-model="textarea"
-                            maxlength="200"
+                            maxlength="1000"
                             show-word-limit>
                     </el-input>
                     <div class="release-idle-place">
