@@ -14,6 +14,22 @@ Vue.config.productionTip = false;
 Vue.use(ElementUI, {
     size: 'medium'
 });
+
+
+router.beforeEach((to, from, next) => {
+    document.title = `${to.meta.title}`;
+    const userInfo = localStorage.getItem('sht_username');
+    console.log('userInfo',userInfo);
+    if (!userInfo
+        &&(to.path === '/me'
+        || to.path === '/message'
+        || to.path === '/release')) {
+        next('/login');
+    }else{
+        next();
+    }
+});
+
 new Vue({
     router,
     render: h => h(App)

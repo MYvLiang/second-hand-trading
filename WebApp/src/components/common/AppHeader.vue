@@ -12,10 +12,11 @@
             <el-button type="primary" icon="el-icon-plus"  @click="toRelease">发布闲置</el-button>
             <el-button type="primary" icon="el-icon-chat-dot-round" @click="toMessage">消息</el-button>
             <el-dropdown trigger="click">
-                <el-avatar style="cursor:pointer;" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+                <router-link v-if="username==='登录'" class="user-name-text" to="/login">{{username}}</router-link>
+                <el-avatar v-else style="cursor:pointer;" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item><div @click="toMe">个人中心</div></el-dropdown-item>
-                    <el-dropdown-item divided style="color: red;">退出登录</el-dropdown-item>
+                    <el-dropdown-item divided style="color: red;"><div @click="loginOut">退出登录</div></el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
@@ -31,12 +32,20 @@
                 searchValue: this.searchInput
             };
         },
+        computed: {
+            username() {
+                let username = localStorage.getItem('sht_username');
+                console.log(username);
+                return username ? username : '登录';
+            }
+        },
         methods: {
             searchIdle() {
                 if ('/search' !== this.$route.path) {
                     this.$router.push({path: '/search', query: {searchValue: this.searchValue}});
                 } else {
                     this.$router.replace({path: '/search', query: {searchValue: this.searchValue}});
+                    this.$router.go(0);
                 }
 
             },
@@ -53,6 +62,15 @@
             toRelease(){
                 if ('/release' !== this.$route.path) {
                     this.$router.push({path: '/release'});
+                }
+            },
+            loginOut(){
+                localStorage.removeItem("sht_username");
+                console.log("login out");
+                if ('/index' === this.$route.path) {
+                    this.$router.go(0);
+                }else {
+                    this.$router.push({path: '/index'});
                 }
             }
         }
@@ -89,5 +107,12 @@
 
     .search-container {
         width: 300px;
+    }
+    .user-name-text{
+        font-size: 16px;
+        font-weight: 600;
+        color: #409EFF;
+        cursor: pointer;
+        text-decoration: none;
     }
 </style>
