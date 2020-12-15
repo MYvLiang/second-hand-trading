@@ -23,7 +23,8 @@ router.beforeEach((to, from, next) => {
     if (!userInfo
         &&(to.path === '/me'
         || to.path === '/message'
-        || to.path === '/release')) {
+        || to.path === '/release'
+        || to.path === '/order')) {
         next('/login');
     }else{
         next();

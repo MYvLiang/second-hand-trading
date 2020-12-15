@@ -49,6 +49,11 @@ export default new Router({
             meta: { title: '闲置详情 | 二手交易平台' }
         },
         {
+            path: '/order',
+            component: () => import('../components/page/order.vue'),
+            meta: { title: '订单详情 | 二手交易平台' }
+        },
+        {
             path: '/login',
             component: () => import('../components/page/login.vue'),
             meta: { title: '登录 | 二手交易平台' }

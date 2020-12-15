@@ -71,11 +71,11 @@
                     </el-tabs>
                     <div class="idle-container-list">
                         <div v-for="(item,index) in dataList[activeName]" class="idle-container-list-item">
-                            <div class="idle-container-list-item-detile" @click="toDetails">
+                            <div class="idle-container-list-item-detile" @click="toDetails(activeName)">
                                 <el-image
                                         style="width: 100px; height: 100px;"
-                                        src="https://pic2.zhimg.com/v2-22d4ebddd475020919bb12aa3a6ddaf7_xs.jpg?source=1940ef5c"
-                                        fit="contain"></el-image>
+                                        src="https://pic4.zhimg.com/80/v2-0aad60bfa8d0dc1ea4315c165594e507_720w.jpg?source=1940ef5c"
+                                        fit="cover"></el-image>
                                 <div class="idle-container-list-item-text">
                                     <div class="idle-container-list-title">
                                         {{index}}{{item}}称名称名称名称名称名称名称名称名称名称名称名称名称名称名fhydhrtgfgdsgsdfgsdfhsfgjhdgjhdffhydhrtgfgdsgsdfgsdfhsfgjhdgjhdf
@@ -84,7 +84,11 @@
                                         详情详情详情详情详情详情详情详情详情详情详情详fagfagsdfgsdfgdfgsfhydhrtgfgdsgsdfgfhydhrtgfgdsgsdfgsdfhsfgjhdgjhdffhydhrtgfgdsgsdfgsdfhsfgjhdgjhdfsdfhsfgjhdgjhdfjdghgfhdf
                                     </div>
                                     <div class="idle-container-list-idle-time">2020-10-10</div>
-                                    <div class="idle-prive">￥50 {{activeName==='5'?orderStatus:''}}</div>
+
+                                    <div class="idle-item-foot">
+                                        <div class="idle-prive">￥50 {{activeName==='5'?orderStatus:''}}</div>
+                                        <el-button v-if="activeName!=='4'&&activeName!=='5'" type="danger" size="mini" plain @click.stop="handle(activeName)">{{handleName[activeName-1]}}</el-button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -186,6 +190,7 @@
         data() {
             return {
                 activeName: '1',
+                handleName:['下架','删除','取消收藏','',''],
                 tableData: [
                     {
                         name: '王小虎',
@@ -256,8 +261,15 @@
             handleDelete(index, row) {
                 console.log(index, row);
             },
-            toDetails(){
-                this.$router.push({path: '/details'});
+            toDetails(activeName){
+                if(activeName==='5'){
+                    this.$router.push({path: '/order'});
+                }else {
+                    this.$router.push({path: '/details'});
+                }
+            },
+            handle(activeName){
+
             }
         }
     }
@@ -389,5 +401,9 @@
     }
     .address-container-list{
         padding: 30px 100px;
+    }
+    .idle-item-foot{
+        display: flex;
+        justify-content: space-between;
     }
 </style>

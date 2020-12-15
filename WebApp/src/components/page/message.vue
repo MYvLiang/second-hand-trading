@@ -8,8 +8,8 @@
                     <div class="message-container-list-left">
                         <el-image
                                 style="width: 55px; height: 55px;border-radius: 5px;"
-                                src="https://pic2.zhimg.com/v2-22d4ebddd475020919bb12aa3a6ddaf7_xs.jpg?source=1940ef5c"
-                                fit="contain"></el-image>
+                                src="https://pic4.zhimg.com/80/v2-0aad60bfa8d0dc1ea4315c165594e507_720w.jpg?source=1940ef5c"
+                                fit="cover"></el-image>
                         <div class="message-container-list-text">
                             <div class="message-nickname">nicheng</div>
                             <div class="message-content">哈哈哈哈哈哈哈哈哈啊啊啊啊啊啊啊啊啊啊啊啊</div>
