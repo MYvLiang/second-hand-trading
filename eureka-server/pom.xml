@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.second.hand.trading</groupId>
-        <artifactId>SHT</artifactId>
+        <artifactId>sht</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>eurekaServer</artifactId>

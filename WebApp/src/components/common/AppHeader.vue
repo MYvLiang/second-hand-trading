@@ -11,9 +11,12 @@
             </div>
             <el-button type="primary" icon="el-icon-plus"  @click="toRelease">发布闲置</el-button>
             <el-button type="primary" icon="el-icon-chat-dot-round" @click="toMessage">消息</el-button>
-            <el-dropdown trigger="click">
-                <router-link v-if="username==='登录'" class="user-name-text" to="/login">{{username}}</router-link>
-                <el-avatar v-else style="cursor:pointer;" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+            <router-link v-if="!isLogin" class="user-name-text" to="/login">登录</router-link>
+            <el-dropdown trigger="click" v-else>
+                <div style="cursor:pointer;display: flex;align-items: center;">
+                    <div style="font-size: 16px;color: #409EFF;padding-right: 5px;">{{nickname}}</div>
+                    <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+                </div>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item><div @click="toMe">个人中心</div></el-dropdown-item>
                     <el-dropdown-item divided style="color: red;"><div @click="loginOut">退出登录</div></el-dropdown-item>
@@ -29,14 +32,25 @@
         props: ['searchInput'],
         data() {
             return {
-                searchValue: this.searchInput
+                searchValue: this.searchInput,
+                nickname:'登录',
+                isLogin:false
             };
         },
-        computed: {
-            username() {
-                let username = localStorage.getItem('sht_username');
-                console.log(username);
-                return username ? username : '登录';
+        created(){
+            console.log("header");
+            if(! this.$globalData.userInfo.nickname){
+                this.$api.getUserInfo().then(res=>{
+                    console.log('Header getUserInfo:',res);
+                    if(res.status_code===1){
+                        this.nickname=res.data.nickname;
+                        this.$globalData.userInfo=res.data;
+                        this.isLogin=true;
+                    }
+                })
+            }else {
+                this.nickname=this.$globalData.userInfo.nickname;
+                this.isLogin=true;
             }
         },
         methods: {
@@ -65,13 +79,20 @@
                 }
             },
             loginOut(){
-                localStorage.removeItem("sht_username");
-                console.log("login out");
-                if ('/index' === this.$route.path) {
-                    this.$router.go(0);
-                }else {
-                    this.$router.push({path: '/index'});
-                }
+                this.$api.logout().then(res=>{
+                    if(res.status_code===1){
+                        this.$globalData.userInfo={};
+                        console.log("login out");
+                        if ('/index' === this.$route.path) {
+                            this.$router.go(0);
+                        }else {
+                            this.$router.push({path: '/index'});
+                        }
+                    }else {
+                        this.$message.error('网络或系统异常，退出登录失败！');
+                    }
+                });
+
             }
         }
     };

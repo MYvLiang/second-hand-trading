@@ -9,6 +9,13 @@ import 'babel-polyfill';
 import api from './api/index.js';
 Vue.prototype.$api = api;
 
+let globalData={
+    userInfo:{
+        nickname:''
+    }
+};
+Vue.prototype.$globalData=globalData;
+
 Vue.config.productionTip = false;
 
 Vue.use(ElementUI, {
@@ -18,14 +25,25 @@ Vue.use(ElementUI, {
 
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title}`;
-    const userInfo = localStorage.getItem('sht_username');
-    console.log('userInfo',userInfo);
-    if (!userInfo
+    console.log(to.path,'userInfo:',Vue.prototype.$globalData.userInfo);
+    const nickname = Vue.prototype.$globalData.userInfo.nickname;
+    if (!nickname
         &&(to.path === '/me'
         || to.path === '/message'
         || to.path === '/release'
         || to.path === '/order')) {
-        next('/login');
+        api.getUserInfo().then(res=>{
+           console.log('getUserInfo:',res);
+           if(res.status_code!==1){
+               next('/login');
+           }else {
+               Vue.prototype.$globalData.userInfo=res.data;
+               next();
+           }
+        }).catch(e=>{
+            next('/login');
+        });
+
     }else{
         next();
     }

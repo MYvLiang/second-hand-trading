@@ -222,7 +222,6 @@
                 ],
                 orderStatus: '已支付',
                 userInfoDialogVisible: false,
-                userNickname: 'SHINY',
                 notUserNicknameEdit: true,
                 userPasswordEdit: false,
                 userPassword1: '',
@@ -233,6 +232,11 @@
                 selectedOptions: [],//存放默认值
                 options: options   //存放城市数据
             };
+        },
+        computed: {
+            userNickname() {
+                return this.$globalData.userInfo.nickname ? this.$globalData.userInfo.nickname : '未登录';
+            }
         },
         methods: {
             handleClick(tab, event) {

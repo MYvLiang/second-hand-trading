@@ -3,22 +3,25 @@
         <el-card class="box-card">
             <div class="login-body">
                 <div class="login-title" @click="toIndex">MYL的二手交易平台</div>
-                <el-input placeholder="请输入手机号..." v-model="username" class="login-input">
-                    <template slot="prepend">
-                        <div class="el-icon-user-solid"></div>
-                    </template>
-                </el-input>
-                <el-input placeholder="请输入密码..." v-model="username" class="login-input">
-                    <template slot="prepend">
-                        <div class="el-icon-lock"></div>
-                    </template>
-                </el-input>
-                <div class="login-submit">
-                    <el-button type="primary" @click="login">登录</el-button>
-                </div>
-                <div class="sign-in-container">
-                    <router-link to="/sign-in" class="sign-in-text">注册</router-link>
-                </div>
+                <el-form ref="form" :model="userForm">
+                    <el-input placeholder="请输入手机号..." v-model="userForm.accountNumber" class="login-input">
+                        <template slot="prepend">
+                            <div class="el-icon-user-solid"></div>
+                        </template>
+                    </el-input>
+                    <el-input placeholder="请输入密码..." v-model="userForm.userPassword" class="login-input"
+                              @change="login"  show-password>
+                        <template slot="prepend">
+                            <div class="el-icon-lock"></div>
+                        </template>
+                    </el-input>
+                    <div class="login-submit">
+                        <el-button type="primary" @click="login">登录</el-button>
+                    </div>
+                    <div class="sign-in-container">
+                        <router-link to="/sign-in" class="sign-in-text">注册</router-link>
+                    </div>
+                </el-form>
             </div>
         </el-card>
     </div>
@@ -29,15 +32,29 @@
         name: "login",
         data() {
             return {
-                username: ''
+                userForm: {
+                    accountNumber: '17322611234',
+                    userPassword: '123456'
+                }
             };
         },
-        methods:{
-            login(){
-                localStorage.setItem('sht_username', 'aaa');
-                this.$router.replace({path: '/index'});
+
+        methods: {
+            login() {
+                this.$api.userLogin({
+                    accountNumber: this.userForm.accountNumber,
+                    userPassword: this.userForm.userPassword
+                }).then(res => {
+                    console.log(res);
+                    if (res.status_code === 1) {
+                        this.$globalData.userInfo = res.data;
+                        this.$router.replace({path: '/index'});
+                    } else {
+                        this.$message.error('登录失败，手机号或密码错误！');
+                    }
+                });
             },
-            toIndex(){
+            toIndex() {
                 this.$router.replace({path: '/index'});
             }
         }
@@ -72,14 +89,17 @@
     .login-input {
         margin-bottom: 20px;
     }
-    .login-submit{
+
+    .login-submit {
         display: flex;
         justify-content: center;
     }
-    .sign-in-container{
+
+    .sign-in-container {
         padding: 0 10px;
     }
-    .sign-in-text{
+
+    .sign-in-text {
         color: #409EFF;
         font-size: 16px;
         text-decoration: none;
