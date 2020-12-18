@@ -15,4 +15,6 @@ public interface UserService {
     UserModel getUser(Long id);
 
     UserModel userLogin(String accountNumber, String userPassword);
+
+    boolean userSignIn(UserModel userModel);
 }

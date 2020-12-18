@@ -1,5 +1,7 @@
 package com.second.hand.trading.server.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.second.hand.trading.server.enums.ErrorMsg;
 import com.second.hand.trading.server.model.UserModel;
 import com.second.hand.trading.server.service.UserService;
@@ -9,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 
 /**
  * @author myl
@@ -33,6 +35,24 @@ public class UserController {
         return ResultVo.success(userService.getUserList());
     }
 
+    @PostMapping("sign-in")
+    public ResultVo signIn(@RequestBody String message){
+        UserModel userModel= null;
+        try {
+            userModel=JSONObject.parseObject(message,UserModel.class);
+        } catch (Exception e) {
+            //参数解析错误
+            return ResultVo.fail(ErrorMsg.JSON_READ_ERROR);
+        }
+        userModel.setSignInTime(new Timestamp(System.currentTimeMillis()));
+        if(userModel.getAvatar()==null||"".equals(userModel.getAvatar())){
+            userModel.setAvatar("https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png");
+        }
+        if(userService.userSignIn(userModel)){
+            return ResultVo.success(userModel);
+        }
+        return ResultVo.fail(ErrorMsg.REGISTER_ERROR);
+    }
     /**
      * 登录，不安全，可伪造id，后期改进
      * @param accountNumber

@@ -6,6 +6,8 @@ import com.second.hand.trading.server.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -30,4 +32,16 @@ public class UserServiceImpl implements UserService {
     public UserModel userLogin(String accountNumber, String userPassword){
         return userDao.userLogin(accountNumber,userPassword);
     }
+
+    public boolean userSignIn(UserModel userModel){
+        int n=0;
+        try {
+            n=userDao.insert(userModel);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+        return n == 1;
+    }
+
 }

@@ -15,6 +15,13 @@ const api = {
             params: query
         });
     },
+    signIn(data) {
+        return request({
+            url: '/user/sign-in',
+            method: 'post',
+            data: data
+        });
+    },
     getUserInfo(query) {
         return request({
             url: '/user/info',
