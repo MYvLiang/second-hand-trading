@@ -5,7 +5,7 @@
                 <router-link to="/">二手交易平台</router-link>
             </div>
             <div class="search-container">
-                <el-input placeholder="搜闲置..." v-model="searchValue" @change="searchIdle">
+                <el-input placeholder="搜闲置..." v-model="searchValue" @keyup.enter.native="searchIdle">
                     <el-button slot="append" icon="el-icon-search" @click="searchIdle"></el-button>
                 </el-input>
             </div>
@@ -38,7 +38,7 @@
             };
         },
         created(){
-            console.log("header");
+            // console.log("header");
             if(! this.$globalData.userInfo.nickname){
                 this.$api.getUserInfo().then(res=>{
                     console.log('Header getUserInfo:',res);

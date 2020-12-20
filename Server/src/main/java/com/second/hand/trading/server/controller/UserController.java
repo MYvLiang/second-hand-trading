@@ -36,14 +36,8 @@ public class UserController {
     }
 
     @PostMapping("sign-in")
-    public ResultVo signIn(@RequestBody String message) {
-        UserModel userModel = null;
-        try {
-            userModel = JSONObject.parseObject(message, UserModel.class);
-        } catch (Exception e) {
-            //参数解析错误
-            return ResultVo.fail(ErrorMsg.JSON_READ_ERROR);
-        }
+    public ResultVo signIn(@RequestBody  UserModel userModel) {
+        System.out.println(userModel);
         userModel.setSignInTime(new Timestamp(System.currentTimeMillis()));
         if (userModel.getAvatar() == null || "".equals(userModel.getAvatar())) {
             userModel.setAvatar("https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png");

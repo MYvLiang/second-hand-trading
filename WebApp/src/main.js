@@ -25,7 +25,7 @@ Vue.use(ElementUI, {
 
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title}`;
-    console.log(to.path,'userInfo:',Vue.prototype.$globalData.userInfo);
+    // console.log(to.path,'userInfo:',Vue.prototype.$globalData.userInfo);
     const nickname = Vue.prototype.$globalData.userInfo.nickname;
     if (!nickname
         &&(to.path === '/me'

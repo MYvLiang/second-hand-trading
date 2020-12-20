@@ -18,7 +18,7 @@
                         <div class="el-icon-lock"></div>
                     </template>
                 </el-input>
-                <el-input placeholder="请再次输入密码..." v-model="userPassword2" @change="signIn" class="sign-in-input" clearable>
+                <el-input placeholder="请再次输入密码..." v-model="userPassword2" @keyup.enter.native="signIn" class="sign-in-input" clearable>
                     <template slot="prepend">
                         <div class="el-icon-lock"></div>
                     </template>
@@ -27,7 +27,7 @@
                     <el-button type="primary" @click="signIn">提交</el-button>
                 </div>
                 <div class="login-container">
-                    <div @click="toLogin" class="login-text">登录</div>
+                    <span @click="toLogin" class="login-text">登录</span>
                 </div>
             </div>
         </el-card>
@@ -117,7 +117,6 @@
     .login-text{
         color: #409EFF;
         font-size: 16px;
-        text-decoration: none;
         cursor:pointer;
     }
 </style>
