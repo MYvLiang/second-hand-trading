@@ -1,17 +1,17 @@
 <template>
     <div>
-        <app-head></app-head>
+        <app-head :nickname-value="userInfo.nickname"></app-head>
         <app-body>
             <div v-show="!eidtAddress">
                 <div class="user-info-container">
                     <div class="user-info-details">
                         <el-image
                                 style="width: 120px; height: 120px;border-radius: 10px;"
-                                src="https://pic2.zhimg.com/v2-22d4ebddd475020919bb12aa3a6ddaf7_xs.jpg?source=1940ef5c"
+                                :src="userInfo.avatar"
                                 fit="contain"></el-image>
                         <div class="user-info-details-text">
-                            <div class="user-info-details-text-nickname">{{userNickname}}</div>
-                            <div class="user-info-details-text-time">2020-10-10加入</div>
+                            <div class="user-info-details-text-nickname">{{userInfo.nickname}}</div>
+                            <div class="user-info-details-text-time">{{userInfo.signInTime}} 加入</div>
                             <div class="user-info-details-text-edit">
                                 <el-button type="primary" plain @click="userInfoDialogVisible = true">编辑个人信息</el-button>
                             </div>
@@ -22,9 +22,9 @@
                                     width="400px">
                                 <div class="edit-tip">昵称</div>
                                 <el-input
-                                        v-model="userNickname"
+                                        v-model="userInfo.nickname"
                                         :disabled="notUserNicknameEdit"
-                                        @blur="saveUserNickname">
+                                        @change="saveUserNickname">
                                     <el-button slot="append" type="warning" icon="el-icon-edit"
                                                @click="notUserNicknameEdit = false">编辑
                                     </el-button>
@@ -230,12 +230,28 @@
                 eidtAddress: false,
                 input1: '',
                 selectedOptions: [],//存放默认值
-                options: options   //存放城市数据
+                options: options,   //存放城市数据,
+                userInfo:{
+                    accountNumber: "",
+                    avatar: "",
+                    nickname: "",
+                    signInTime: "",
+                }
             };
         },
-        computed: {
-            userNickname() {
-                return this.$globalData.userInfo.nickname ? this.$globalData.userInfo.nickname : '未登录';
+        created(){
+            if(! this.$globalData.userInfo.nickname){
+                this.$api.getUserInfo().then(res=>{
+                    if(res.status_code===1){
+                        res.data.signInTime=res.data.signInTime.substring(0,10);
+                        console.log(res.data);
+                        this.$globalData.userInfo=res.data;
+                        this.userInfo=this.$globalData.userInfo;
+                    }
+                })
+            }else {
+                this.userInfo=this.$globalData.userInfo;
+                console.log(this.userInfo);
             }
         },
         methods: {
@@ -245,11 +261,38 @@
             },
             saveUserNickname() {
                 this.notUserNicknameEdit = true;
+                this.$api.updateNickname({
+                    nickname:this.userInfo.nickname
+                }).then(res=>{
+                    console.log(res);
+                })
 
             },
             savePassword() {
-                this.userPasswordEdit = false;
-                console.log(this.userPassword1)
+                if(!this.userPassword1||!this.userPassword2){
+                    this.$message.error('密码为空！');
+                }else if(this.userPassword2===this.userPassword3){
+                    this.$api.updatePassword({
+                        oldPassword:this.userPassword1,
+                        newPassword:this.userPassword2
+                    }).then(res=>{
+                        if(res.status_code===1){
+                            this.userPasswordEdit = false;
+                            this.$message({
+                                message: '修改成功！',
+                                type: 'success'
+                            });
+                            this.userPassword1='';
+                            this.userPassword2='';
+                            this.userPassword3='';
+                        }else{
+                            this.$message.error('旧密码错误，修改失败！');
+                        }
+                    })
+                }else{
+                    this.$message.error('两次输入的密码不一致！');
+                }
+
             },
             finishEdit() {
                 this.notUserNicknameEdit = true;

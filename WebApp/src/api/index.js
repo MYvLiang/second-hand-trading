@@ -28,7 +28,21 @@ const api = {
             method: 'get',
             params: query
         });
-    }
+    },
+    updateNickname(query) {
+        return request({
+            url: '/user/nickname',
+            method: 'get',
+            params: query
+        });
+    },
+    updatePassword(query) {
+        return request({
+            url: '/user/password',
+            method: 'get',
+            params: query
+        });
+    },
 };
 
 

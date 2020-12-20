@@ -47,6 +47,7 @@
                 }).then(res => {
                     console.log(res);
                     if (res.status_code === 1) {
+                        res.data.signInTime=res.data.signInTime.substring(0,10);
                         this.$globalData.userInfo = res.data;
                         this.$router.replace({path: '/index'});
                     } else {

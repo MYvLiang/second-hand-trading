@@ -37,6 +37,7 @@ router.beforeEach((to, from, next) => {
            if(res.status_code!==1){
                next('/login');
            }else {
+               res.data.signInTime=res.data.signInTime.substring(0,10);
                Vue.prototype.$globalData.userInfo=res.data;
                next();
            }

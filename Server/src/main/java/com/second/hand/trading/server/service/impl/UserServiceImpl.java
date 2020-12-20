@@ -44,4 +44,11 @@ public class UserServiceImpl implements UserService {
         return n == 1;
     }
 
+    public boolean updateNickname(UserModel userModel){
+        return userDao.updateByPrimaryKeySelective(userModel)==1;
+    }
+
+    public boolean updatePassword(String newPassword, String oldPassword,Long id){
+        return userDao.updatePassword(newPassword,oldPassword,id)==1;
+    }
 }

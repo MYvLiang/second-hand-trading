@@ -105,4 +105,9 @@
       sign_in_time = #{signInTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updatePassword">
+    update sh_user
+    set user_password = #{newPassword,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT} and user_password=#{oldPassword,jdbcType=VARCHAR}
+  </update>
 </mapper>

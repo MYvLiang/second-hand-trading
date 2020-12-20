@@ -14,7 +14,7 @@
             <router-link v-if="!isLogin" class="user-name-text" to="/login">登录</router-link>
             <el-dropdown trigger="click" v-else>
                 <div style="cursor:pointer;display: flex;align-items: center;">
-                    <div style="font-size: 16px;color: #409EFF;padding-right: 5px;">{{nickname}}</div>
+                    <div style="font-size: 16px;color: #409EFF;padding-right: 5px;">{{nicknameValue?nicknameValue:nickname}}</div>
                     <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
                 </div>
                 <el-dropdown-menu slot="dropdown">
@@ -29,7 +29,7 @@
 
     export default {
         name: 'Header',
-        props: ['searchInput'],
+        props: ['searchInput','nicknameValue'],
         data() {
             return {
                 searchValue: this.searchInput,
@@ -44,6 +44,7 @@
                     console.log('Header getUserInfo:',res);
                     if(res.status_code===1){
                         this.nickname=res.data.nickname;
+                        res.data.signInTime=res.data.signInTime.substring(0,10);
                         this.$globalData.userInfo=res.data;
                         this.isLogin=true;
                     }

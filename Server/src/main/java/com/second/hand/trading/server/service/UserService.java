@@ -17,4 +17,8 @@ public interface UserService {
     UserModel userLogin(String accountNumber, String userPassword);
 
     boolean userSignIn(UserModel userModel);
+
+    boolean updateNickname(UserModel userModel);
+
+    boolean updatePassword(String newPassword, String oldPassword,Long id);
 }
