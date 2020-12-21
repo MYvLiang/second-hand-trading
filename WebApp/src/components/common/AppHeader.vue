@@ -15,7 +15,7 @@
             <el-dropdown trigger="click" v-else>
                 <div style="cursor:pointer;display: flex;align-items: center;">
                     <div style="font-size: 16px;color: #409EFF;padding-right: 5px;">{{nicknameValue?nicknameValue:nickname}}</div>
-                    <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+                    <el-avatar :src="avatarValue?avatarValue:avatar"></el-avatar>
                 </div>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item><div @click="toMe">个人中心</div></el-dropdown-item>
@@ -29,11 +29,12 @@
 
     export default {
         name: 'Header',
-        props: ['searchInput','nicknameValue'],
+        props: ['searchInput','nicknameValue','avatarValue'],
         data() {
             return {
                 searchValue: this.searchInput,
                 nickname:'登录',
+                avatar:'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
                 isLogin:false
             };
         },
@@ -44,6 +45,7 @@
                     console.log('Header getUserInfo:',res);
                     if(res.status_code===1){
                         this.nickname=res.data.nickname;
+                        this.avatar=res.data.avatar;
                         res.data.signInTime=res.data.signInTime.substring(0,10);
                         this.$globalData.userInfo=res.data;
                         this.isLogin=true;
@@ -51,6 +53,7 @@
                 })
             }else {
                 this.nickname=this.$globalData.userInfo.nickname;
+                this.avatar=this.$globalData.userInfo.avatar;
                 this.isLogin=true;
             }
         },

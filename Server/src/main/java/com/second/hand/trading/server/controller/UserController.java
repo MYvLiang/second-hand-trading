@@ -1,6 +1,5 @@
 package com.second.hand.trading.server.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.second.hand.trading.server.enums.ErrorMsg;
 import com.second.hand.trading.server.model.UserModel;
 import com.second.hand.trading.server.service.UserService;
@@ -35,6 +34,11 @@ public class UserController {
         return ResultVo.success(userService.getUserList());
     }
 
+    /**
+     * 注册账号
+     * @param userModel
+     * @return
+     */
     @PostMapping("sign-in")
     public ResultVo signIn(@RequestBody  UserModel userModel) {
         System.out.println(userModel);
@@ -105,19 +109,31 @@ public class UserController {
         return ResultVo.success(userService.getUser(Long.valueOf(id)));
     }
 
-    @GetMapping("/nickname")
-    public ResultVo updateUserNickname(@CookieValue("shUserId") @NotNull(message = "登录异常 请重新登录")
-                                       @NotEmpty(message = "登录异常 请重新登录")
-                                               String id, @RequestParam("nickname") @NotEmpty @NotNull String nickname) {
-        UserModel userModel = new UserModel();
-        userModel.setNickname(nickname);
+    /**
+     * 修改用户公开信息
+     * @param id
+     * @param userModel
+     * @return
+     */
+    @PostMapping("/info")
+    public ResultVo updateUserPublicInfo(@CookieValue("shUserId") @NotNull(message = "登录异常 请重新登录")
+                                     @NotEmpty(message = "登录异常 请重新登录")
+                                             String id, @RequestBody  UserModel userModel) {
         userModel.setId(Long.valueOf(id));
-        if (userService.updateNickname(userModel)) {
+        if (userService.updateUserInfo(userModel)) {
             return ResultVo.success();
         }
         return ResultVo.fail(ErrorMsg.SYSTEM_ERROR);
     }
 
+
+    /**
+     * 修改密码
+     * @param id
+     * @param oldPassword
+     * @param newPassword
+     * @return
+     */
     @GetMapping("/password")
     public ResultVo updateUserPassword(@CookieValue("shUserId") @NotNull(message = "登录异常 请重新登录")
                                        @NotEmpty(message = "登录异常 请重新登录") String id,

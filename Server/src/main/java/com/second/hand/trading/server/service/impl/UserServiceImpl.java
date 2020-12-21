@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
         return n == 1;
     }
 
-    public boolean updateNickname(UserModel userModel){
+    public boolean updateUserInfo(UserModel userModel){
         return userDao.updateByPrimaryKeySelective(userModel)==1;
     }
 

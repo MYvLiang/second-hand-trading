@@ -1,14 +1,22 @@
 <template>
     <div>
-        <app-head :nickname-value="userInfo.nickname"></app-head>
+        <app-head :nickname-value="userInfo.nickname"
+        :avatarValue="userInfo.avatar"></app-head>
         <app-body>
             <div v-show="!eidtAddress">
                 <div class="user-info-container">
                     <div class="user-info-details">
-                        <el-image
-                                style="width: 120px; height: 120px;border-radius: 10px;"
-                                :src="userInfo.avatar"
-                                fit="contain"></el-image>
+
+                        <el-upload
+                                action="http://localhost:8080/file/"
+                                :on-success="fileHandleSuccess"
+                                :file-list="imgFileList"
+                                >
+                            <el-image
+                                    style="width: 120px; height: 120px;border-radius: 10px;"
+                                    :src="userInfo.avatar"
+                                    fit="contain"></el-image>
+                        </el-upload>
                         <div class="user-info-details-text">
                             <div class="user-info-details-text-nickname">{{userInfo.nickname}}</div>
                             <div class="user-info-details-text-time">{{userInfo.signInTime}} 加入</div>
@@ -189,6 +197,7 @@
         },
         data() {
             return {
+                imgFileList:[],
                 activeName: '1',
                 handleName:['下架','删除','取消收藏','',''],
                 tableData: [
@@ -261,10 +270,11 @@
             },
             saveUserNickname() {
                 this.notUserNicknameEdit = true;
-                this.$api.updateNickname({
+                this.$api.updateUserPublicInfo({
                     nickname:this.userInfo.nickname
                 }).then(res=>{
                     console.log(res);
+                    this.$globalData.userInfo.nickname=this.userInfo.nickname;
                 })
 
             },
@@ -317,6 +327,18 @@
             },
             handle(activeName){
 
+            },
+            fileHandleSuccess(response, file, fileList){
+                console.log("file:",response,file,fileList);
+                let imgUrl='http://localhost:8080'+response.data;
+                this.imgFileList=[];
+                this.$api.updateUserPublicInfo({
+                    avatar:imgUrl
+                }).then(res=>{
+                    console.log(res);
+                    this.userInfo.avatar=imgUrl;
+                    this.$globalData.userInfo.avatar=imgUrl;
+                })
             }
         }
     }

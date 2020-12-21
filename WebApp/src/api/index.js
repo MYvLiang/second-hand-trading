@@ -29,11 +29,11 @@ const api = {
             params: query
         });
     },
-    updateNickname(query) {
+    updateUserPublicInfo(data) {
         return request({
-            url: '/user/nickname',
-            method: 'get',
-            params: query
+            url: '/user/info',
+            method: 'post',
+            data: data
         });
     },
     updatePassword(query) {

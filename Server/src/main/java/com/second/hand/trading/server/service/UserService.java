@@ -18,7 +18,7 @@ public interface UserService {
 
     boolean userSignIn(UserModel userModel);
 
-    boolean updateNickname(UserModel userModel);
+    boolean updateUserInfo(UserModel userModel);
 
     boolean updatePassword(String newPassword, String oldPassword,Long id);
 }

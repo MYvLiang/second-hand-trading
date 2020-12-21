@@ -51,13 +51,19 @@
                     <div class="release-idle-container-picture">
                         <div class="release-idle-container-picture-title">上传闲置照片</div>
                         <el-upload
-                                class="upload-demo"
-                                action="https://jsonplaceholder.typicode.com/posts/"
-                                :on-preview="handlePreview"
-                                :on-remove="handleRemove"
-                                list-type="picture-card">
-                            <i class="el-icon-plus"></i>
+                                action="http://localhost:8080/file/"
+                                :on-preview="fileHandlePreview"
+                                :on-remove="fileHandleRemove"
+                                :on-success="fileHandleSuccess"
+                                :show-file-list="showFileList"
+                                drag
+                                multiple>
+                            <i class="el-icon-upload"></i>
+                            <div class="el-upload__text">将图片拖到此处，或<em>点击上传</em></div>
                         </el-upload>
+                        <div>
+                            <el-image v-for="(img,index) in imgList" :src="'http://localhost:8080'+img"></el-image>
+                        </div>
                     </div>
                     <div style="display: flex;justify-content: center;margin-top: 30px;">
                         <el-button type="primary" plain>确认发布</el-button>
@@ -84,6 +90,7 @@
         },
         data() {
             return {
+                showFileList:true,
                 options:options,
                 selectedOptions:'',
                 options2: [{
@@ -105,19 +112,24 @@
                 value: '',
                 input1: '',
                 textarea: '',
-                input2:''
+                input2:'',
+                imgList:[]
             };
         },
         methods: {
             handleChange(value) {
                 console.log(value,this.selectedOptions[1]);
             },
-            handleRemove(file, fileList) {
+            fileHandleRemove(file, fileList) {
                 console.log(file, fileList);
             },
-            handlePreview(file) {
+            fileHandlePreview(file) {
                 console.log(file);
             },
+            fileHandleSuccess(response, file, fileList){
+                console.log("file:",response,file,fileList);
+                this.imgList.push(response.data);
+            }
         }
     }
 </script>
