@@ -1,7 +1,7 @@
 <template>
     <div>
         <app-head :nickname-value="userInfo.nickname"
-        :avatarValue="userInfo.avatar"></app-head>
+                  :avatarValue="userInfo.avatar"></app-head>
         <app-body>
             <div v-show="!eidtAddress">
                 <div class="user-info-container">
@@ -11,7 +11,7 @@
                                 action="http://localhost:8080/file/"
                                 :on-success="fileHandleSuccess"
                                 :file-list="imgFileList"
-                                >
+                        >
                             <el-image
                                     style="width: 120px; height: 120px;border-radius: 10px;"
                                     :src="userInfo.avatar"
@@ -95,7 +95,9 @@
 
                                     <div class="idle-item-foot">
                                         <div class="idle-prive">￥50 {{activeName==='5'?orderStatus:''}}</div>
-                                        <el-button v-if="activeName!=='4'&&activeName!=='5'" type="danger" size="mini" plain @click.stop="handle(activeName)">{{handleName[activeName-1]}}</el-button>
+                                        <el-button v-if="activeName!=='4'&&activeName!=='5'" type="danger" size="mini"
+                                                   plain @click.stop="handle(activeName)">{{handleName[activeName-1]}}
+                                        </el-button>
                                     </div>
                                 </div>
                             </div>
@@ -109,12 +111,12 @@
                 <div class="address-container-add">
                     <div class="address-container-add-title">新增收货地址</div>
                     <div class="address-container-add-item">
-                        <el-input placeholder="请输入收货人姓名" v-model="input1">
+                        <el-input placeholder="请输入收货人姓名" v-model="addressInfo.consigneeName" maxlength="10"  show-word-limit>
                             <div slot="prepend">收货人姓名</div>
                         </el-input>
                     </div>
                     <div class="address-container-add-item">
-                        <el-input placeholder="请输入收货人手机号" v-model="input1">
+                        <el-input placeholder="请输入收货人手机号" v-model="addressInfo.consigneePhone" onkeyup="this.value=this.value.replace(/[^\d.]/g,'');" maxlength="11"  show-word-limit>
                             <div slot="prepend">手机号</div>
                         </el-input>
                     </div>
@@ -124,37 +126,37 @@
                         <el-cascader
                                 :options="options"
                                 v-model="selectedOptions"
-                                @change="handleChange"
+                                @change="handleAddressChange"
                                 :separator="' '"
                         >
                         </el-cascader>
                     </div>
                     <div class="address-container-add-item">
-                        <el-input placeholder="请输入详细地址（如道路、门牌号、小区、楼栋号等信息）" v-model="input1">
+                        <el-input placeholder="请输入详细地址（如道路、门牌号、小区、楼栋号等信息）" v-model="addressInfo.detailAddress" maxlength="50"  show-word-limit>
                             <div slot="prepend">详细地址</div>
                         </el-input>
                     </div>
-                    <el-checkbox v-model="input1">设置为默认地址</el-checkbox>
-                    <el-button style="margin-left: 20px;">保存</el-button>
+                    <el-checkbox v-model="addressInfo.defaultFlag">设置为默认地址</el-checkbox>
+                    <el-button style="margin-left: 20px;" @click="saveAddress">保存</el-button>
                 </div>
                 <div class="address-container-list">
                     <div style="color: #409EFF;font-size: 15px;padding-left: 10px;">已有收货地址</div>
                     <el-table
                             stripe
-                            :data="tableData"
+                            :data="addressData"
                             style="width: 100%">
                         <el-table-column
-                                prop="name"
+                                prop="consigneeName"
                                 label="收货人姓名"
                                 width="100">
                         </el-table-column>
                         <el-table-column
-                                prop="phone"
+                                prop="consigneePhone"
                                 label="手机号"
                                 width="120">
                         </el-table-column>
                         <el-table-column
-                                prop="address"
+                                prop="detailAddressText"
                                 label="地址"
                                 width="270">
                         </el-table-column>
@@ -162,17 +164,24 @@
                             <template slot-scope="scope">
                                 <el-button
                                         size="mini"
-                                        @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                                        @click="handleEdit(scope.$index, scope.row)">编辑
+                                </el-button>
                                 <el-button
                                         size="mini"
                                         type="danger"
-                                        @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                                        @click="handleDelete(scope.$index, scope.row)">删除
+                                </el-button>
                             </template>
                         </el-table-column>
-                        <el-table-column
-                                prop="name"
-                                label=" "
-                                width="110">
+                        <el-table-column label="是否默认地址" width="110">
+                            <template slot-scope="scope">
+                                <el-button v-if="!scope.row.defaultFlag"
+                                           size="mini"
+                                           @click="handleSetDefault(scope.$index, scope.row)">设为默认
+                                </el-button>
+                                <div v-else style="padding-left: 10px;color: #409EFF;">{{scope.row.defaultAddress}}
+                                </div>
+                            </template>
                         </el-table-column>
                     </el-table>
                 </div>
@@ -197,28 +206,18 @@
         },
         data() {
             return {
-                imgFileList:[],
+                imgFileList: [],
+                addressInfo: {
+                    consigneeName: '',
+                    consigneePhone: '',
+                    provinceName: '',
+                    cityName: '',
+                    regionName: '',
+                    detailAddress: '',
+                    defaultFlag: false
+                },
                 activeName: '1',
-                handleName:['下架','删除','取消收藏','',''],
-                tableData: [
-                    {
-                        name: '王小虎',
-                        phone:12345678901,
-                        address: '上海市普陀区金沙江路上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        name: '王小虎',
-                        phone:12345678901,
-                        address: '上海市普陀区金沙江路 1517 弄'
-                    }, {
-                        name: '王小虎',
-                        phone:12345678901,
-                        address: '上海市普陀区金沙江路 1519 弄'
-                    }, {
-                        name: '王小虎',
-                        phone:12345678901,
-                        address: '上海市普陀区金沙江路 1516 弄'
-                    }
-                ],
+                handleName: ['下架', '删除', '取消收藏', '', ''],
                 dataList: [
                     [],
                     [1, 2, 3, 4, 5, 6],
@@ -240,30 +239,45 @@
                 input1: '',
                 selectedOptions: [],//存放默认值
                 options: options,   //存放城市数据,
-                userInfo:{
+                userInfo: {
                     accountNumber: "",
                     avatar: "",
                     nickname: "",
                     signInTime: "",
-                }
+                },
+                addressData: []
             };
         },
-        created(){
-            if(! this.$globalData.userInfo.nickname){
-                this.$api.getUserInfo().then(res=>{
-                    if(res.status_code===1){
-                        res.data.signInTime=res.data.signInTime.substring(0,10);
+        created() {
+            if (!this.$globalData.userInfo.nickname) {
+                this.$api.getUserInfo().then(res => {
+                    if (res.status_code === 1) {
+                        res.data.signInTime = res.data.signInTime.substring(0, 10);
                         console.log(res.data);
-                        this.$globalData.userInfo=res.data;
-                        this.userInfo=this.$globalData.userInfo;
+                        this.$globalData.userInfo = res.data;
+                        this.userInfo = this.$globalData.userInfo;
                     }
                 })
-            }else {
-                this.userInfo=this.$globalData.userInfo;
+            } else {
+                this.userInfo = this.$globalData.userInfo;
                 console.log(this.userInfo);
             }
+            this.getAddressData();
         },
         methods: {
+            getAddressData() {
+                this.$api.getAddress().then(res => {
+                    if (res.status_code === 1) {
+                        let data = res.data;
+                        for (let i = 0; i < data.length; i++) {
+                            data[i].detailAddressText = data[i].provinceName + data[i].cityName + data[i].regionName + data[i].detailAddress;
+                            data[i].defaultAddress = data[i].defaultFlag ? '默认地址' : '设为默认';
+                        }
+                        console.log(data);
+                        this.addressData = data;
+                    }
+                })
+            },
             handleClick(tab, event) {
                 // console.log(tab, event);
                 console.log(this.activeName);
@@ -271,35 +285,35 @@
             saveUserNickname() {
                 this.notUserNicknameEdit = true;
                 this.$api.updateUserPublicInfo({
-                    nickname:this.userInfo.nickname
-                }).then(res=>{
+                    nickname: this.userInfo.nickname
+                }).then(res => {
                     console.log(res);
-                    this.$globalData.userInfo.nickname=this.userInfo.nickname;
+                    this.$globalData.userInfo.nickname = this.userInfo.nickname;
                 })
 
             },
             savePassword() {
-                if(!this.userPassword1||!this.userPassword2){
+                if (!this.userPassword1 || !this.userPassword2) {
                     this.$message.error('密码为空！');
-                }else if(this.userPassword2===this.userPassword3){
+                } else if (this.userPassword2 === this.userPassword3) {
                     this.$api.updatePassword({
-                        oldPassword:this.userPassword1,
-                        newPassword:this.userPassword2
-                    }).then(res=>{
-                        if(res.status_code===1){
+                        oldPassword: this.userPassword1,
+                        newPassword: this.userPassword2
+                    }).then(res => {
+                        if (res.status_code === 1) {
                             this.userPasswordEdit = false;
                             this.$message({
                                 message: '修改成功！',
                                 type: 'success'
                             });
-                            this.userPassword1='';
-                            this.userPassword2='';
-                            this.userPassword3='';
-                        }else{
+                            this.userPassword1 = '';
+                            this.userPassword2 = '';
+                            this.userPassword3 = '';
+                        } else {
                             this.$message.error('旧密码错误，修改失败！');
                         }
                     })
-                }else{
+                } else {
                     this.$message.error('两次输入的密码不一致！');
                 }
 
@@ -309,36 +323,138 @@
                 this.userInfoDialogVisible = false;
                 this.userPasswordEdit = false;
             },
-            handleChange(value) {
+            handleAddressChange(value) {
                 console.log(value);
+                this.addressInfo.provinceName = value[0];
+                this.addressInfo.cityName = value[1];
+                this.addressInfo.regionName = value[2];
             },
             handleEdit(index, row) {
                 console.log(index, row);
+                this.addressInfo = JSON.parse(JSON.stringify(row));
+                this.selectedOptions = ['', '', ''];
+                this.selectedOptions[0] = row.provinceName;
+                this.selectedOptions[1] = row.cityName;
+                this.selectedOptions[2] = row.regionName;
             },
             handleDelete(index, row) {
                 console.log(index, row);
+                this.$confirm('是否确定删除该地址?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$api.deleteAddress(row).then(res => {
+                        if (res.status_code === 1) {
+                            this.$message({
+                                message: '删除成功！',
+                                type: 'success'
+                            });
+                            this.addressData.splice(index, 1);
+                            if (row.defaultFlag && this.addressData.length > 0) {
+                                this.addressData[0].defaultFlag = true;
+                                this.addressData[0].defaultAddress = '默认地址';
+                                this.update({
+                                    id:this.addressData[0].id,
+                                    defaultFlag: true
+                                });
+                            }
+                        } else {
+                            this.$message.error('系统异常，删除失败！')
+                        }
+                    }).catch(() => {
+                        this.$message.error('网络异常！')
+                    });
+                }).catch(() => {
+                });
+
             },
-            toDetails(activeName){
-                if(activeName==='5'){
+            handleSetDefault(index, row) {
+                console.log(index, row);
+                row.defaultFlag=true;
+                this.update(row);
+            },
+            toDetails(activeName) {
+                if (activeName === '5') {
                     this.$router.push({path: '/order'});
-                }else {
+                } else {
                     this.$router.push({path: '/details'});
                 }
             },
-            handle(activeName){
+            handle(activeName) {
 
             },
-            fileHandleSuccess(response, file, fileList){
-                console.log("file:",response,file,fileList);
-                let imgUrl='http://localhost:8080'+response.data;
-                this.imgFileList=[];
+            fileHandleSuccess(response, file, fileList) {
+                console.log("file:", response, file, fileList);
+                let imgUrl = 'http://localhost:8080' + response.data;
+                this.imgFileList = [];
                 this.$api.updateUserPublicInfo({
-                    avatar:imgUrl
-                }).then(res=>{
+                    avatar: imgUrl
+                }).then(res => {
                     console.log(res);
-                    this.userInfo.avatar=imgUrl;
-                    this.$globalData.userInfo.avatar=imgUrl;
+                    this.userInfo.avatar = imgUrl;
+                    this.$globalData.userInfo.avatar = imgUrl;
                 })
+            },
+            update(data) {
+                this.$api.updateAddress(data).then(res => {
+                    if (res.status_code === 1) {
+                        this.getAddressData();
+                        this.$message({
+                            message: '修改成功！',
+                            type: 'success'
+                        });
+                    } else {
+                        this.$message.error('系统异常，修改失败！')
+                    }
+                }).catch(() => {
+                    this.$message.error('网络异常！')
+                })
+            },
+            saveAddress() {
+                if (this.addressInfo.id) {
+                    console.log('update:', this.addressInfo);
+                    this.update(this.addressInfo);
+                    this.addressInfo={
+                        consigneeName: '',
+                        consigneePhone: '',
+                        provinceName: '',
+                        cityName: '',
+                        regionName: '',
+                        detailAddress: '',
+                        defaultFlag: false
+                    };
+                    this.selectedOptions=[];
+                } else {
+                    if (this.addressData.length >= 5) {
+                        this.$message.error('已达到最大地址数量！')
+                    } else {
+                        console.log(this.addressInfo);
+                        this.$api.addAddress(this.addressInfo).then(res => {
+                            if (res.status_code === 1) {
+                                this.getAddressData();
+                                this.$message({
+                                    message: '新增成功！',
+                                    type: 'success'
+                                });
+                                this.selectedOptions=[];
+                                this.addressInfo={
+                                    consigneeName: '',
+                                    consigneePhone: '',
+                                    provinceName: '',
+                                    cityName: '',
+                                    regionName: '',
+                                    detailAddress: '',
+                                    defaultFlag: false
+                                };
+                            } else {
+                                this.$message.error('系统异常，新增失败！')
+                            }
+                        }).catch(e => {
+                            this.$message.error('网络异常！')
+                        })
+                    }
+                }
             }
         }
     }
@@ -390,7 +506,7 @@
 
     .idle-container-list-item {
         border-bottom: 1px solid #eeeeee;
-        cursor:pointer;
+        cursor: pointer;
     }
 
     .idle-container-list-item:last-child {
@@ -465,13 +581,16 @@
         font-size: 14px;
         padding: 10px;
     }
-    .address-container-add{
+
+    .address-container-add {
         padding: 0 200px;
     }
-    .address-container-list{
+
+    .address-container-list {
         padding: 30px 100px;
     }
-    .idle-item-foot{
+
+    .idle-item-foot {
         display: flex;
         justify-content: space-between;
     }
