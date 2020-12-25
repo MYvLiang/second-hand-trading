@@ -71,6 +71,48 @@ const api = {
             data: data
         });
     },
+    addIdleItem(data) {
+        return request({
+            url: '/idle/add',
+            method: 'post',
+            data: data
+        });
+    },
+    getIdleItem(query) {
+        return request({
+            url: '/idle/info',
+            method: 'get',
+            params: query
+        });
+    },
+    getAllIdleItem(query) {
+        return request({
+            url: '/idle/all',
+            method: 'get',
+            params: query
+        });
+    },
+    findIdleTiem(query) {
+        return request({
+            url: '/idle/find',
+            method: 'get',
+            params: query
+        });
+    },
+    findIdleTiemByLable(query) {
+        return request({
+            url: '/idle/lable',
+            method: 'get',
+            params: query
+        });
+    },
+    updateIdleItem(data) {
+        return request({
+            url: '/idle/update',
+            method: 'post',
+            data: data
+        });
+    },
 };
 
 

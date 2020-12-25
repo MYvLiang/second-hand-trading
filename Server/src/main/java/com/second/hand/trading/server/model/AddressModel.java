@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * sh_address
- * @author 
+ * @author myl
  */
 public class AddressModel implements Serializable {
     /**

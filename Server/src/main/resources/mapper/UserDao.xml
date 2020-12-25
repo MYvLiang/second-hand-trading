@@ -28,6 +28,13 @@
     <include refid="Base_Column_List" />
     from sh_user
   </select>
+  <select id="findUserByList" resultMap="BaseResultMap">
+    select id,nickname, avatar, sign_in_time
+    from sh_user where id in
+    <foreach collection="idList" index="index" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from sh_user
     where id = #{id,jdbcType=BIGINT}

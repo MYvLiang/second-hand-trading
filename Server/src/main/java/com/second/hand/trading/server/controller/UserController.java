@@ -72,7 +72,7 @@ public class UserController {
         Cookie cookie = new Cookie("shUserId", String.valueOf(userModel.getId()));
         cookie.setMaxAge(60 * 60 * 24 * 30);
         cookie.setPath("/");
-        cookie.setHttpOnly(true);
+        cookie.setHttpOnly(false);
         response.addCookie(cookie);
         return ResultVo.success(userModel);
     }

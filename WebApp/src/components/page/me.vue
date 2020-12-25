@@ -11,6 +11,7 @@
                                 action="http://localhost:8080/file/"
                                 :on-success="fileHandleSuccess"
                                 :file-list="imgFileList"
+                                accept="image/*"
                         >
                             <el-image
                                     style="width: 120px; height: 120px;border-radius: 10px;"
@@ -19,7 +20,7 @@
                         </el-upload>
                         <div class="user-info-details-text">
                             <div class="user-info-details-text-nickname">{{userInfo.nickname}}</div>
-                            <div class="user-info-details-text-time">{{userInfo.signInTime}} 加入</div>
+                            <div class="user-info-details-text-time">{{userInfo.signInTime}} 加入平台</div>
                             <div class="user-info-details-text-edit">
                                 <el-button type="primary" plain @click="userInfoDialogVisible = true">编辑个人信息</el-button>
                             </div>
@@ -78,25 +79,31 @@
                         <el-tab-pane label="我买到的" name="5"></el-tab-pane>
                     </el-tabs>
                     <div class="idle-container-list">
-                        <div v-for="(item,index) in dataList[activeName]" class="idle-container-list-item">
-                            <div class="idle-container-list-item-detile" @click="toDetails(activeName)">
+                        <div v-for="(item,index) in dataList[activeName-1]" class="idle-container-list-item">
+                            <div class="idle-container-list-item-detile" @click="toDetails(activeName,item)">
                                 <el-image
                                         style="width: 100px; height: 100px;"
-                                        src="https://pic4.zhimg.com/80/v2-0aad60bfa8d0dc1ea4315c165594e507_720w.jpg?source=1940ef5c"
-                                        fit="cover"></el-image>
+                                        :src="item.imgUrl"
+                                        fit="cover">
+                                    <div slot="error" class="image-slot">
+                                        <i class="el-icon-picture-outline">无图</i>
+                                    </div>
+                                </el-image>
                                 <div class="idle-container-list-item-text">
                                     <div class="idle-container-list-title">
-                                        {{index}}{{item}}称名称名称名称名称名称名称名称名称名称名称名称名称名称名fhydhrtgfgdsgsdfgsdfhsfgjhdgjhdffhydhrtgfgdsgsdfgsdfhsfgjhdgjhdf
+                                        {{item.idleName}}
                                     </div>
                                     <div class="idle-container-list-idle-details">
-                                        详情详情详情详情详情详情详情详情详情详情详情详fagfagsdfgsdfgdfgsfhydhrtgfgdsgsdfgfhydhrtgfgdsgsdfgsdfhsfgjhdgjhdffhydhrtgfgdsgsdfgsdfhsfgjhdgjhdfsdfhsfgjhdgjhdfjdghgfhdf
+                                        {{item.idleDetails}}
                                     </div>
-                                    <div class="idle-container-list-idle-time">2020-10-10</div>
+                                    <div class="idle-container-list-idle-time">{{item.timeStr}}</div>
 
                                     <div class="idle-item-foot">
-                                        <div class="idle-prive">￥50 {{activeName==='5'?orderStatus:''}}</div>
+                                        <div class="idle-prive">￥{{item.idlePrice}}
+                                            {{activeName==='5'?orderStatus:''}}
+                                        </div>
                                         <el-button v-if="activeName!=='4'&&activeName!=='5'" type="danger" size="mini"
-                                                   plain @click.stop="handle(activeName)">{{handleName[activeName-1]}}
+                                                   plain @click.stop="handle(activeName,item,index)">{{handleName[activeName-1]}}
                                         </el-button>
                                     </div>
                                 </div>
@@ -111,12 +118,14 @@
                 <div class="address-container-add">
                     <div class="address-container-add-title">新增收货地址</div>
                     <div class="address-container-add-item">
-                        <el-input placeholder="请输入收货人姓名" v-model="addressInfo.consigneeName" maxlength="10"  show-word-limit>
+                        <el-input placeholder="请输入收货人姓名" v-model="addressInfo.consigneeName" maxlength="10"
+                                  show-word-limit>
                             <div slot="prepend">收货人姓名</div>
                         </el-input>
                     </div>
                     <div class="address-container-add-item">
-                        <el-input placeholder="请输入收货人手机号" v-model="addressInfo.consigneePhone" onkeyup="this.value=this.value.replace(/[^\d.]/g,'');" maxlength="11"  show-word-limit>
+                        <el-input placeholder="请输入收货人手机号" v-model="addressInfo.consigneePhone"
+                                  onkeyup="this.value=this.value.replace(/[^\d.]/g,'');" maxlength="11" show-word-limit>
                             <div slot="prepend">手机号</div>
                         </el-input>
                     </div>
@@ -132,7 +141,8 @@
                         </el-cascader>
                     </div>
                     <div class="address-container-add-item">
-                        <el-input placeholder="请输入详细地址（如道路、门牌号、小区、楼栋号等信息）" v-model="addressInfo.detailAddress" maxlength="50"  show-word-limit>
+                        <el-input placeholder="请输入详细地址（如道路、门牌号、小区、楼栋号等信息）" v-model="addressInfo.detailAddress"
+                                  maxlength="50" show-word-limit>
                             <div slot="prepend">详细地址</div>
                         </el-input>
                     </div>
@@ -220,11 +230,11 @@
                 handleName: ['下架', '删除', '取消收藏', '', ''],
                 dataList: [
                     [],
-                    [1, 2, 3, 4, 5, 6],
-                    [2, 4, 5, 6],
-                    [2, 4, 5],
-                    [2],
-                    [5, 6],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
                     [],
                     [],
                 ],
@@ -236,7 +246,6 @@
                 userPassword2: '',
                 userPassword3: '',
                 eidtAddress: false,
-                input1: '',
                 selectedOptions: [],//存放默认值
                 options: options,   //存放城市数据,
                 userInfo: {
@@ -263,8 +272,26 @@
                 console.log(this.userInfo);
             }
             this.getAddressData();
+            this.getIdleItemData();
         },
         methods: {
+            getIdleItemData() {
+                this.$api.getAllIdleItem().then(res => {
+                    console.log(res);
+                    if (res.status_code === 1) {
+                        for (let i = 0; i < res.data.length; i++) {
+                            res.data[i].timeStr = res.data[i].releaseTime.substring(0, 10) + " " + res.data[i].releaseTime.substring(11, 19);
+                            let pictureList = JSON.parse(res.data[i].pictureList);
+                            res.data[i].imgUrl = pictureList.length > 0 ? pictureList[0] : '';
+                            if (res.data[i].idleStatus === 1) {
+                                this.dataList[0].push(res.data[i]);
+                            } else if (res.data[i].idleStatus === 2) {
+                                this.dataList[1].push(res.data[i]);
+                            }
+                        }
+                    }
+                })
+            },
             getAddressData() {
                 this.$api.getAddress().then(res => {
                     if (res.status_code === 1) {
@@ -355,7 +382,7 @@
                                 this.addressData[0].defaultFlag = true;
                                 this.addressData[0].defaultAddress = '默认地址';
                                 this.update({
-                                    id:this.addressData[0].id,
+                                    id: this.addressData[0].id,
                                     defaultFlag: true
                                 });
                             }
@@ -371,22 +398,45 @@
             },
             handleSetDefault(index, row) {
                 console.log(index, row);
-                row.defaultFlag=true;
+                row.defaultFlag = true;
                 this.update(row);
             },
-            toDetails(activeName) {
+            toDetails(activeName, item) {
                 if (activeName === '5') {
-                    this.$router.push({path: '/order'});
+                    this.$router.push({path: '/order', query: {id: item.id}});
                 } else {
-                    this.$router.push({path: '/details'});
+                    this.$router.push({path: '/details', query: {id: item.id}});
                 }
             },
-            handle(activeName) {
-
+            handle(activeName,item,index) {
+                console.log(activeName,item,index);
+                if(activeName==='1'){
+                    this.$api.updateIdleItem({
+                        id:item.id,
+                        idleStatus:2
+                    }).then(res=>{
+                        console.log(res);
+                        if(res.status_code===1){
+                            this.dataList[0].splice(index,1);
+                            item.idleStatus=2;
+                            this.dataList[1].unshift(item);
+                        }
+                    });
+                }else if(activeName==='2'){
+                    this.$api.updateIdleItem({
+                        id:item.id,
+                        idleStatus:0
+                    }).then(res=>{
+                        console.log(res);
+                        if(res.status_code===1){
+                            this.dataList[1].splice(index,1);
+                        }
+                    });
+                }
             },
             fileHandleSuccess(response, file, fileList) {
                 console.log("file:", response, file, fileList);
-                let imgUrl = 'http://localhost:8080' + response.data;
+                let imgUrl = response.data;
                 this.imgFileList = [];
                 this.$api.updateUserPublicInfo({
                     avatar: imgUrl
@@ -415,7 +465,7 @@
                 if (this.addressInfo.id) {
                     console.log('update:', this.addressInfo);
                     this.update(this.addressInfo);
-                    this.addressInfo={
+                    this.addressInfo = {
                         consigneeName: '',
                         consigneePhone: '',
                         provinceName: '',
@@ -424,7 +474,7 @@
                         detailAddress: '',
                         defaultFlag: false
                     };
-                    this.selectedOptions=[];
+                    this.selectedOptions = [];
                 } else {
                     if (this.addressData.length >= 5) {
                         this.$message.error('已达到最大地址数量！')
@@ -437,8 +487,8 @@
                                     message: '新增成功！',
                                     type: 'success'
                                 });
-                                this.selectedOptions=[];
-                                this.addressInfo={
+                                this.selectedOptions = [];
+                                this.addressInfo = {
                                     consigneeName: '',
                                     consigneePhone: '',
                                     provinceName: '',
@@ -591,6 +641,7 @@
     }
 
     .idle-item-foot {
+        width: 800px;
         display: flex;
         justify-content: space-between;
     }

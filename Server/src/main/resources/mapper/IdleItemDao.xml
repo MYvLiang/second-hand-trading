@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.second.hand.trading.server.dao.IdleItemDao">
+  <resultMap id="BaseResultMap" type="com.second.hand.trading.server.model.IdleItemModel">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="idle_name" jdbcType="VARCHAR" property="idleName" />
+    <result column="idle_details" jdbcType="VARCHAR" property="idleDetails" />
+    <result column="picture_list" jdbcType="VARCHAR" property="pictureList" />
+    <result column="idle_price" jdbcType="DECIMAL" property="idlePrice" />
+    <result column="idle_place" jdbcType="VARCHAR" property="idlePlace" />
+    <result column="idle_label" jdbcType="INTEGER" property="idleLabel" />
+    <result column="release_time" jdbcType="TIMESTAMP" property="releaseTime" />
+    <result column="idle_status" jdbcType="TINYINT" property="idleStatus" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, idle_name, idle_details, picture_list, idle_price, idle_place, idle_label, release_time, 
+    idle_status, user_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sh_idle_item
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getAllIdleItem" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sh_idle_item
+    where user_id = #{userId,jdbcType=BIGINT} and idle_status!=0
+  </select>
+  <select id="countIdleItem"  resultType="int">
+    select COUNT(*) from sh_idle_item
+    where (idle_name LIKE "%"#{idleName}"%" or idle_details LIKE "%"#{idleDetails}"%") and idle_status = 1
+  </select>
+  <select id="countIdleItemByLable"  resultType="int">
+    select COUNT(*) from sh_idle_item
+    where idle_label = #{idleLabel} and idle_status = 1
+  </select>
+  <select id="findIdleItem" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sh_idle_item
+    where (idle_name LIKE "%"#{findValue}"%" or idle_details LIKE "%"#{findValue}"%") and idle_status = 1 limit #{begin}, #{nums}
+  </select>
+  <select id="findIdleItemByLable" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sh_idle_item
+    where idle_label = #{idleLabel}  and idle_status = 1 limit #{begin}, #{nums}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sh_idle_item
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.second.hand.trading.server.model.IdleItemModel" useGeneratedKeys="true">
+    insert into sh_idle_item (idle_name, idle_details, picture_list, 
+      idle_price, idle_place, idle_label, 
+      release_time, idle_status, user_id
+      )
+    values (#{idleName,jdbcType=VARCHAR}, #{idleDetails,jdbcType=VARCHAR}, #{pictureList,jdbcType=VARCHAR}, 
+      #{idlePrice,jdbcType=DECIMAL}, #{idlePlace,jdbcType=VARCHAR}, #{idleLabel,jdbcType=INTEGER}, 
+      #{releaseTime,jdbcType=TIMESTAMP}, #{idleStatus,jdbcType=TINYINT}, #{userId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.second.hand.trading.server.model.IdleItemModel" useGeneratedKeys="true">
+    insert into sh_idle_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="idleName != null">
+        idle_name,
+      </if>
+      <if test="idleDetails != null">
+        idle_details,
+      </if>
+      <if test="pictureList != null">
+        picture_list,
+      </if>
+      <if test="idlePrice != null">
+        idle_price,
+      </if>
+      <if test="idlePlace != null">
+        idle_place,
+      </if>
+      <if test="idleLabel != null">
+        idle_label,
+      </if>
+      <if test="releaseTime != null">
+        release_time,
+      </if>
+      <if test="idleStatus != null">
+        idle_status,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="idleName != null">
+        #{idleName,jdbcType=VARCHAR},
+      </if>
+      <if test="idleDetails != null">
+        #{idleDetails,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureList != null">
+        #{pictureList,jdbcType=VARCHAR},
+      </if>
+      <if test="idlePrice != null">
+        #{idlePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="idlePlace != null">
+        #{idlePlace,jdbcType=VARCHAR},
+      </if>
+      <if test="idleLabel != null">
+        #{idleLabel,jdbcType=INTEGER},
+      </if>
+      <if test="releaseTime != null">
+        #{releaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="idleStatus != null">
+        #{idleStatus,jdbcType=TINYINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.second.hand.trading.server.model.IdleItemModel">
+    update sh_idle_item
+    <set>
+      <if test="idleName != null">
+        idle_name = #{idleName,jdbcType=VARCHAR},
+      </if>
+      <if test="idleDetails != null">
+        idle_details = #{idleDetails,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureList != null">
+        picture_list = #{pictureList,jdbcType=VARCHAR},
+      </if>
+      <if test="idlePrice != null">
+        idle_price = #{idlePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="idlePlace != null">
+        idle_place = #{idlePlace,jdbcType=VARCHAR},
+      </if>
+      <if test="idleLabel != null">
+        idle_label = #{idleLabel,jdbcType=INTEGER},
+      </if>
+      <if test="releaseTime != null">
+        release_time = #{releaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="idleStatus != null">
+        idle_status = #{idleStatus,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT} and user_id = #{userId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.second.hand.trading.server.model.IdleItemModel">
+    update sh_idle_item
+    set idle_name = #{idleName,jdbcType=VARCHAR},
+      idle_details = #{idleDetails,jdbcType=VARCHAR},
+      picture_list = #{pictureList,jdbcType=VARCHAR},
+      idle_price = #{idlePrice,jdbcType=DECIMAL},
+      idle_place = #{idlePlace,jdbcType=VARCHAR},
+      idle_label = #{idleLabel,jdbcType=INTEGER},
+      release_time = #{releaseTime,jdbcType=TIMESTAMP},
+      idle_status = #{idleStatus,jdbcType=TINYINT},
+      user_id = #{userId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -27,6 +27,9 @@ public class FileController {
     @Value("${userFilePath}")
     private String userFilePath;
 
+    @Value("${baseUrl}")
+    private String baseUrl;
+
     @Autowired
     private FileService fileService;
 
@@ -36,7 +39,7 @@ public class FileController {
         String fileName= uuid+ multipartFile.getOriginalFilename();
         try {
             if (fileService.uploadFile(multipartFile,fileName)) {
-                return ResultVo.success("/image?imageName="+fileName);
+                return ResultVo.success(baseUrl+"/image?imageName="+fileName);
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());

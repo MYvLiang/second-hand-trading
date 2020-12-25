@@ -5,7 +5,7 @@ import java.util.Date;
 
 /**
  * sh_user
- * @author 
+ * @author myl
  */
 public class UserModel implements Serializable {
     /**

@@ -5,7 +5,7 @@
             <div class="release-idle-container">
                 <div class="release-idle-container-title">发布闲置</div>
                 <div class="release-idle-container-form">
-                    <el-input placeholder="请输入闲置名称" v-model="input1"
+                    <el-input placeholder="请输入闲置名称" v-model="idleItemInfo.idleName"
                               maxlength="30"
                               show-word-limit>
                     </el-input>
@@ -14,7 +14,7 @@
                             type="textarea"
                             autosize
                             placeholder="请输入闲置的详细介绍..."
-                            v-model="textarea"
+                            v-model="idleItemInfo.idleDetails"
                             maxlength="1000"
                             show-word-limit>
                     </el-input>
@@ -32,7 +32,7 @@
                     <div style="display: flex; justify-content: space-between;">
                         <div>
                             <div class="release-tip">闲置类别</div>
-                            <el-select  v-model="value" placeholder="请选择类别">
+                            <el-select  v-model="idleItemInfo.idleLabel" placeholder="请选择类别">
                                 <el-option
                                         v-for="item in options2"
                                         :key="item.value"
@@ -42,9 +42,9 @@
                             </el-select>
                         </div>
                         <div style="width: 300px;">
-                            <el-input placeholder="请输入价格" v-model="input2" type="number">
+                            <el-input-number v-model="idleItemInfo.idlePrice" :precision="2" :step="10" :max="10000000">
                                 <div slot="prepend">价格</div>
-                            </el-input>
+                            </el-input-number>
                         </div>
 
                     </div>
@@ -56,17 +56,25 @@
                                 :on-remove="fileHandleRemove"
                                 :on-success="fileHandleSuccess"
                                 :show-file-list="showFileList"
+                                :limit="10"
+                                :on-exceed="handleExceed"
+                                accept="image/*"
                                 drag
                                 multiple>
                             <i class="el-icon-upload"></i>
                             <div class="el-upload__text">将图片拖到此处，或<em>点击上传</em></div>
                         </el-upload>
-                        <div>
-                            <el-image v-for="(img,index) in imgList" :src="'http://localhost:8080'+img"></el-image>
+                        <div class="picture-list">
+                            <el-image style="width: 600px;margin-bottom: 2px;" fit="contain"
+                                      v-for="(img,index) in imgList" :src="img"
+                                      :preview-src-list="imgList"></el-image>
                         </div>
+                        <el-dialog :visible.sync="imgDialogVisible">
+                            <img width="100%" :src="dialogImageUrl" alt="">
+                        </el-dialog>
                     </div>
-                    <div style="display: flex;justify-content: center;margin-top: 30px;">
-                        <el-button type="primary" plain>确认发布</el-button>
+                    <div style="display: flex;justify-content: center;margin-top: 30px;margin-bottom: 30px;">
+                        <el-button type="primary" plain @click="releaseButton">确认发布</el-button>
                     </div>
                 </div>
             </div>
@@ -90,9 +98,11 @@
         },
         data() {
             return {
+                imgDialogVisible:false,
+                dialogImageUrl:'',
                 showFileList:true,
                 options:options,
-                selectedOptions:'',
+                selectedOptions:[],
                 options2: [{
                     value: 1,
                     label: '类别1'
@@ -109,27 +119,60 @@
                     value: 5,
                     label: '类别5'
                 }],
-                value: '',
-                input1: '',
-                textarea: '',
-                input2:'',
-                imgList:[]
+                imgList:[],
+                idleItemInfo:{
+                    idleName:'',
+                    idleDetails:'',
+                    pictureList:'',
+                    idlePrice:0,
+                    idlePlace:'',
+                    idleLabel:''
+                }
             };
         },
         methods: {
             handleChange(value) {
-                console.log(value,this.selectedOptions[1]);
+                console.log(value);
+                this.idleItemInfo.idlePlace=value[1];
             },
             fileHandleRemove(file, fileList) {
                 console.log(file, fileList);
+                for(let i=0;i<this.imgList.length;i++){
+                    if(this.imgList[i]===file.response.data){
+                        this.imgList.splice(i,1);
+                    }
+                }
             },
             fileHandlePreview(file) {
                 console.log(file);
+                this.dialogImageUrl=file.response.data;
+                this.imgDialogVisible=true;
             },
             fileHandleSuccess(response, file, fileList){
                 console.log("file:",response,file,fileList);
                 this.imgList.push(response.data);
-            }
+            },
+            releaseButton(){
+                this.idleItemInfo.pictureList=JSON.stringify(this.imgList);
+                console.log(this.idleItemInfo);
+                this.$api.addIdleItem(this.idleItemInfo).then(res=>{
+                    if (res.status_code === 1) {
+                        this.$message({
+                            message: '发布成功！',
+                            type: 'success'
+                        });
+                        console.log(res.data);
+                        this.$router.replace({path: '/details', query: {id: res.data.id}});
+                    } else {
+                        this.$message.error('发布失败！'+res.msg);
+                    }
+                }).catch(e=>{
+                    this.$message.error('网络异常！');
+                })
+            },
+            handleExceed(files, fileList) {
+                this.$message.warning(`限制10张图片，本次选择了 ${files.length} 张图，共选择了 ${files.length + fileList.length} 张图`);
+            },
         }
     }
 </script>
@@ -173,5 +216,11 @@
         margin: 10px 0;
         color: #555555;
         font-size: 14px;
+    }
+    .picture-list {
+        margin: 20px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 </style>

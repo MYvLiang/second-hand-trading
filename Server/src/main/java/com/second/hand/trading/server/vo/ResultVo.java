@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.second.hand.trading.server.enums.ErrorMsg;
 
 /**
- * @author NaNRailgun
+ * @author myl
  * @param <T> 代返回数据 的 数据类型
  */
 @JsonInclude(value = JsonInclude.Include.NON_NULL)

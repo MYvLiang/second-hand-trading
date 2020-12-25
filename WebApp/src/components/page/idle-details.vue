@@ -7,36 +7,31 @@
                     <div class="details-header-user-info">
                         <el-image
                                 style="width: 80px; height: 80px;border-radius: 5px;"
-                                src="https://pic2.zhimg.com/v2-22d4ebddd475020919bb12aa3a6ddaf7_xs.jpg?source=1940ef5c"
+                                :src="idleItemInfo.user.avatar"
                                 fit="contain"></el-image>
                         <div style="margin-left: 10px;">
-                            <div class="details-header-user-info-nickname">nicheng</div>
-                            <div class="details-header-user-info-time">2020-2-2加入</div>
+                            <div class="details-header-user-info-nickname">{{idleItemInfo.user.nickname}}</div>
+                            <div class="details-header-user-info-time">{{idleItemInfo.user.signInTime.substring(0,10)}} 加入平台</div>
                         </div>
                     </div>
-                    <div class="details-header-buy">
-                        <div style="color: red;font-size: 18px;font-weight: 600;">50.12￥</div>
-                        <el-button type="danger" plain>立即购买</el-button>
-                        <el-button type="primary" plain>收藏</el-button>
+                    <div class="details-header-buy" :style="'width:'+(isMaster?'150px;':'280px;')">
+                        <div style="color: red;font-size: 18px;font-weight: 600;">￥{{idleItemInfo.idlePrice}}</div>
+                        <el-button v-if="!isMaster" type="danger" plain>立即购买</el-button>
+                        <el-button v-if="!isMaster" type="primary" plain>收藏</el-button>
+                        <el-button v-if="isMaster&&idleItemInfo.idleStatus===1" type="danger" @click="changeStatus(idleItemInfo,2)" plain>下架</el-button>
+                        <el-button v-if="isMaster&&idleItemInfo.idleStatus===2" type="primary" @click="changeStatus(idleItemInfo,1)" plain>重新上架</el-button>
                     </div>
                 </div>
 
                 <div class="details-info">
-                    <div class="details-info-title">标题标题标题标题标题标题</div>
-                    <div class="details-info-main">
-                        <p>
-                            正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文。</p>
-                        <p>
-                            正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文。</p>
+                    <div class="details-info-title">{{idleItemInfo.idleName}}</div>
+                    <div class="details-info-main" v-html="idleItemInfo.idleDetails">
+                        {{idleItemInfo.idleDetails}}
                     </div>
                     <div class="details-picture">
-                        <el-image v-for="(a,i) in [1,2]"
-                                  style="width: 500px;  max-height: 500px;margin-bottom: 2px;"
-                                  src="https://pic2.zhimg.com/v2-22d4ebddd475020919bb12aa3a6ddaf7_xs.jpg?source=1940ef5c"
-                                  fit="contain"></el-image>
-                        <el-image v-for="(a,i) in [1,2]"
-                                  style="width: 500px; max-height: 500px;margin-bottom: 2px;"
-                                  src="https://pic4.zhimg.com/80/v2-0aad60bfa8d0dc1ea4315c165594e507_720w.jpg?source=1940ef5c"
+                        <el-image v-for="(imgUrl,i) in idleItemInfo.pictureList"
+                                  style="width: 90%;margin-bottom: 2px;"
+                                  :src="imgUrl"
                                   fit="contain"></el-image>
                     </div>
                 </div>
@@ -99,16 +94,81 @@
         data() {
             return {
                 textarea2:'',
-                isReply:false
+                isReply:false,
+                idleItemInfo:{
+                    id:'',
+                    idleName:'',
+                    idleDetails:'',
+                    pictureList:[],
+                    idlePrice:0,
+                    idlePlace:'',
+                    idleLabel:'',
+                    idleStatus:-1,
+                    userId:'',
+                    user:{
+                        avatar:'',
+                        nickname:'',
+                        signInTime:''
+                    },
+                },
+                isMaster:false
             };
         },
+        created(){
+            let id=this.$route.query.id;
+            this.$api.getIdleItem({
+                id:id
+            }).then(res=>{
+                console.log(res);
+                if(res.data){
+                    let list=res.data.idleDetails.split(/\r?\n/);
+                    let str='';
+                    for(let i=0;i<list.length;i++){
+                        str+='<p>'+list[i]+'</p>';
+                    }
+                    res.data.idleDetails=str;
+                    res.data.pictureList=JSON.parse(res.data.pictureList);
+                    this.idleItemInfo=res.data;
+                    console.log(this.idleItemInfo);
+                    let userId=this.getCookie('shUserId');
+                    if(userId == this.idleItemInfo.userId){
+                        console.log('isMaster');
+                        this.isMaster=true;
+                    }
+                }
+                $('html,body').animate({
+                    scrollTop: 0
+                }, {duration: 500, easing: "swing"});
+            });
+        },
         methods: {
+            getCookie(cname){
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++)
+                {
+                    var c = ca[i].trim();
+                    if (c.indexOf(name)===0) return c.substring(name.length,c.length);
+                }
+                return "";
+            },
             replyMessage(index){
                 console.log('回复',index);
                 $('html,body').animate({
                     scrollTop: $("#replyMessageLocation").offset().top-600
                 }, {duration: 500, easing: "swing"});
                 this.isReply=true;
+            },
+            changeStatus(idle,status){
+                this.$api.updateIdleItem({
+                    id:idle.id,
+                    idleStatus:status
+                }).then(res=>{
+                    console.log(res);
+                    if(res.status_code===1){
+                        this.idleItemInfo.idleStatus=status;
+                    }
+                });
             }
         },
     }
@@ -152,7 +212,7 @@
     }
 
     .details-info {
-        padding: 20px;
+        padding: 20px 50px;
     }
 
     .details-info-title {
@@ -166,7 +226,6 @@
         font-size: 17px;
         color: #121212;
         line-height: 160%;
-        text-indent: 36px;
     }
 
     .details-picture {

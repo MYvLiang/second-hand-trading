@@ -20,6 +20,8 @@ public interface UserDao {
 
     List<UserModel> getUserList();
 
+    List<UserModel> findUserByList(List<Long> idList);
+
     int updateByPrimaryKeySelective(UserModel record);
 
     int updateByPrimaryKey(UserModel record);

@@ -6,29 +6,37 @@
                 <div style="margin: 0 20px;">
                     <el-row :gutter="30">
                         <el-col :span="6" v-for="(idle,index) in idleList">
-                            <div class="idle-card" @click="toDetails">
+                            <div class="idle-card" @click="toDetails(idle)">
                                 <el-image
                                         style="width: 100%; height: 160px"
-                                        src="https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/772352677/O1CN011jxMrP1Ve6uWORNF2_!!0-item_pic.jpg_580x580Q90.jpg_.webp"
-                                        fit="contain"></el-image>
+                                        :src="idle.imgUrl"
+                                        fit="contain">
+                                    <div slot="error" class="image-slot">
+                                        <i class="el-icon-picture-outline">无图</i>
+                                    </div>
+                                </el-image>
                                 <div class="idle-title">
-                                    {{index}}{{idle}}fsfasdfasdgfdasgsdfhsghfsfsfasdfasdgfdasgsdfhsghfsfhydhrtgfgdsgsdfgsdfhsfgjhdgjhdffhydhrtgfgdsgsdfgsdfhsfgjhdgjhdffhydhrtgfgdsgsdfgsdfhsfgjhdgjhdf
+                                    {{idle.idleName}}
                                 </div>
                                 <el-row style="margin: 5px 10px;">
                                     <el-col :span="12">
-                                        <div class="idle-prive">￥50</div>
+                                        <div class="idle-prive">￥{{idle.idlePrice}}</div>
                                     </el-col>
                                     <el-col :span="12">
-                                        <div class="idle-place">佛山</div>
+                                        <div class="idle-place">{{idle.idlePlace}}</div>
                                     </el-col>
                                 </el-row>
-                                <div class="idle-time">2020-10-20</div>
+                                <div class="idle-time">{{idle.timeStr}}</div>
                                 <div class="user-info">
                                     <el-image
                                             style="width: 30px; height: 30px"
-                                            src="https://pic2.zhimg.com/v2-22d4ebddd475020919bb12aa3a6ddaf7_xs.jpg?source=1940ef5c"
-                                            fit="contain"></el-image>
-                                    <div class="user-nickname">shiny</div>
+                                            :src="idle.user.avatar"
+                                            fit="contain">
+                                        <div slot="error" class="image-slot">
+                                            <i class="el-icon-picture-outline">无图</i>
+                                        </div>
+                                    </el-image>
+                                    <div class="user-nickname">{{idle.user.nickname}}</div>
                                 </div>
                             </div>
                         </el-col>
@@ -39,9 +47,9 @@
                             background
                             @current-change="handleCurrentChange"
                             :current-page.sync="currentPage"
-                            :page-size="40"
+                            :page-size="8"
                             layout="prev, pager, next, jumper"
-                            :total="1000">
+                            :total="totalItem">
                     </el-pagination>
                 </div>
             </div>
@@ -64,34 +72,52 @@
         },
         data() {
             return {
-                idleList: ["dsfa", "dfsafs", "fhfh"],
+                idleList: [],
                 currentPage: 1,
-                searchValue: ''
+                searchValue: '',
+                totalItem:1
             };
         },
         created() {
-            this.getIdleDatas();
+            this.findIdleTiem(1, this.$route.query.searchValue);
+            this.searchValue = this.$route.query.searchValue;
         },
         watch: {
-            '$route'() {
-
-                this.getIdleDatas();
-            },
+            $route(to, from) {
+                this.searchValue = to.query.searchValue;
+                this.findIdleTiem(to.query.page, to.query.searchValue);
+            }
         },
         methods: {
+            findIdleTiem(page, findValue) {
+                this.$api.findIdleTiem({
+                    page: page,
+                    nums: 8,
+                    findValue: findValue
+                }).then(res => {
+                    console.log(res);
+                    let list = res.data.list;
+                    for (let i = 0; i < list.length; i++) {
+                        list[i].timeStr = list[i].releaseTime.substring(0, 10) + " " + list[i].releaseTime.substring(11, 19);
+                        let pictureList = JSON.parse(list[i].pictureList);
+                        list[i].imgUrl = pictureList.length > 0 ? pictureList[0] : '';
+                    }
+                    this.idleList = list;
+                    this.totalItem=res.data.count;
+                }).catch(e => {
+                    console.log(e)
+                })
+            },
             handleClick(tab, event) {
                 console.log(tab, event);
                 console.log(this.labelName)
             },
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
+                this.$router.replace({query: {page: val, searchValue: this.searchValue}});
             },
-            getIdleDatas() {
-                this.searchValue = this.$route.query.searchValue;
-                console.log('searchValue=', this.searchValue);
-            },
-            toDetails(){
-                this.$router.push({path: '/details'});
+            toDetails(idle) {
+                this.$router.push({path: '/details', query: {id: idle.id}});
             }
         }
     }
