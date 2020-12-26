@@ -148,6 +148,27 @@ const api = {
             params: query
         });
     },
+    addOrderAddress(data) {
+        return request({
+            url: '/order-address/add',
+            method: 'post',
+            data: data
+        });
+    },
+    updateOrderAddress(data) {
+        return request({
+            url: '/order-address/update',
+            method: 'post',
+            data: data
+        });
+    },
+    getOrderAddress(query) {
+        return request({
+            url: '/order-address/info',
+            method: 'get',
+            params: query
+        });
+    },
 };
 
 

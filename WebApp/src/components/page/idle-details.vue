@@ -131,6 +131,7 @@
                     this.idleItemInfo=res.data;
                     console.log(this.idleItemInfo);
                     let userId=this.getCookie('shUserId');
+                    console.log('userid',userId)
                     if(userId == this.idleItemInfo.userId){
                         console.log('isMaster');
                         this.isMaster=true;

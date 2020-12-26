@@ -45,7 +45,8 @@ public class OrderController {
                                  @NotEmpty(message = "登录异常 请重新登录") String shUserId,
                                  @RequestParam Long id){
         OrderModel orderModel=orderService.getOrder(id);
-        if(orderModel.getUserId().equals(Long.valueOf(shUserId))){
+        if(orderModel.getUserId().equals(Long.valueOf(shUserId))||
+                orderModel.getIdleItem().getUserId().equals(Long.valueOf(shUserId))){
             return ResultVo.success(orderModel);
         }
         return ResultVo.fail(ErrorMsg.SYSTEM_ERROR);

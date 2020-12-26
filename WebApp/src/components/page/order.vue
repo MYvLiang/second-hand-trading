@@ -11,7 +11,7 @@
                     <div class="idle-info-title">{{orderInfo.idleItem.idleName}}</div>
                     <div class="idle-info-price">￥{{orderInfo.orderPrice}}</div>
                 </div>
-                <div class="address-container" @click.stop="selectAddressDialog">
+                <div class="address-container" @click.stop="selectAddressDialog" :style="orderInfo.orderStatus===0?'cursor: pointer;':''">
                     <div class="address-title">收货地址: {{addressInfo.consigneeName}} {{addressInfo.consigneePhone}}</div>
                     <div class="address-detials">{{addressInfo.detailAddress}}</div>
                     <el-button v-if="!addressInfo.detailAddress" @click.stop="selectAddressDialog" type="primary" plain>选择收货地址</el-button>
@@ -62,10 +62,10 @@
                     </div>
                 </div>
                 <div class="menu">
-                    <el-button type="danger" plain @click="changeOrderStatus(4,orderInfo)">取消订单</el-button>
-                    <el-button type="primary" plain @click="changeOrderStatus(1,orderInfo)">立即支付</el-button>
-                    <el-button type="primary" plain @click="changeOrderStatus(2,orderInfo)">确认发货</el-button>
-                    <el-button type="primary" plain @click="changeOrderStatus(3,orderInfo)">确认收货</el-button>
+                    <el-button v-if="userId==orderInfo.userId&&orderInfo.orderStatus===0" type="danger" plain @click="changeOrderStatus(4,orderInfo)">取消订单</el-button>
+                    <el-button v-if="userId==orderInfo.userId&&orderInfo.orderStatus===0" type="primary" plain @click="changeOrderStatus(1,orderInfo)">立即支付</el-button>
+                    <el-button v-if="userId==orderInfo.idleItem.userId&&orderInfo.orderStatus===1" type="primary" plain @click="changeOrderStatus(2,orderInfo)">发货</el-button>
+                    <el-button v-if="userId==orderInfo.userId&&orderInfo.orderStatus===2" type="primary" plain @click="changeOrderStatus(3,orderInfo)">确认收货</el-button>
                 </div>
             </div>
             <app-foot></app-foot>
@@ -111,17 +111,21 @@
                     paymentStatus: 0,
                     paymentTime: "",
                     paymentWay: "",
-                    userId: 1
+                    userId: 0
                 },
                 addressInfo: {
+                    id:'',
                     update:false,
                     consigneeName: '',
                     consigneePhone: '',
                     detailAddress: ''
-                }
+                },
+                userId:''
             };
         },
         created() {
+            this.userId=this.getCookie('shUserId');
+            console.log('userId',this.userId,this.getCookie('shUserId'));
             let orderId = this.$route.query.id;
             console.log(orderId);
             this.$api.getOrder({
@@ -143,10 +147,28 @@
                         }
                     }
                     this.orderInfo = res.data;
+                    this.$api.getOrderAddress({
+                        orderId:this.orderInfo.id
+                    }).then(res=>{
+                        if(res.data){
+                            this.addressInfo= res.data;
+                            this.addressInfo.update=true;
+                        }
+                    })
                 }
             })
         },
         methods: {
+            getCookie(cname){
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++)
+                {
+                    var c = ca[i].trim();
+                    if (c.indexOf(name)===0) return c.substring(name.length,c.length);
+                }
+                return "0";
+            },
             toDetails(id) {
                 this.$router.replace({path: 'details', query: {id: id}});
             },
@@ -170,41 +192,63 @@
             },
             selectAddress(i,item){
                 this.addressDialogVisible=false;
-                console.log(item);
-                this.addressInfo={
-                    update:true,
-                    consigneeName: item.consigneeName,
-                    consigneePhone: item.consigneePhone,
-                    detailAddress: item.detailAddressText
-                };
+                console.log(item,this.addressInfo);
+                this.addressInfo.consigneeName=item.consigneeName;
+                this.addressInfo.consigneePhone=item.consigneePhone;
+                this.addressInfo.detailAddress=item.detailAddressText;
+                if(this.addressInfo.update){
+                    this.$api.updateOrderAddress({
+                        id:this.addressInfo.id,
+                        consigneeName:item.consigneeName,
+                        consigneePhone:item.consigneePhone,
+                        detailAddress:item.detailAddressText
+                    })
+                }else{
+                    this.$api.addOrderAddress({
+                        orderId:this.orderInfo.id,
+                        consigneeName:item.consigneeName,
+                        consigneePhone:item.consigneePhone,
+                        detailAddress:item.detailAddressText
+                    }).then(res=>{
+                        if(res.status_code===1){
+                            this.addressInfo.update=true;
+                            this.addressInfo.id=res.data.id;
+                        }
+                    })
+                }
+
             },
             changeOrderStatus(orderStatus, orderInfo) {
                 if (orderStatus === 1) {
                     console.log('zhifu');
-                    this.$confirm('模拟支付宝支付，是否确认支付', '支付订单', {
-                        confirmButtonText: '支付',
-                        cancelButtonText: '取消',
-                        type: 'warning'
-                    }).then(() => {
-                        this.$api.updateOrder({
-                            id: orderInfo.id,
-                            orderStatus: orderStatus,
-                            paymentStatus: 1,
-                            paymentWay: '支付宝',
-                        }).then(res => {
-                            if (res.status_code === 1) {
-                                this.$message({
-                                    message: '支付成功！',
-                                    type: 'success'
-                                });
-                                this.orderInfo.orderStatus = orderStatus;
-                                this.orderInfo.paymentStatus = 1;
-                                this.orderInfo.paymentWay = '支付宝';
-                                this.orderInfo.paymentTime = res.data.paymentTime;
-                            }
-                        })
-                    }).catch(() => {
-                    });
+                    if(!this.addressInfo.detailAddress){
+                        this.$message.error('请选择地址！')
+                    }else{
+                        this.$confirm('模拟支付宝支付，是否确认支付', '支付订单', {
+                            confirmButtonText: '支付',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            this.$api.updateOrder({
+                                id: orderInfo.id,
+                                orderStatus: orderStatus,
+                                paymentStatus: 1,
+                                paymentWay: '支付宝',
+                            }).then(res => {
+                                if (res.status_code === 1) {
+                                    this.$message({
+                                        message: '支付成功！',
+                                        type: 'success'
+                                    });
+                                    this.orderInfo.orderStatus = orderStatus;
+                                    this.orderInfo.paymentStatus = 1;
+                                    this.orderInfo.paymentWay = '支付宝';
+                                    this.orderInfo.paymentTime = res.data.paymentTime;
+                                }
+                            })
+                        }).catch(() => {
+                        });
+                    }
                 } else {
                     this.$api.updateOrder({
                         id: orderInfo.id,
@@ -255,7 +299,7 @@
         min-height: 60px;
         padding: 20px;
         border-bottom: 20px solid #f6f6f6;
-        cursor: pointer;
+
     }
 
     .address-title {
