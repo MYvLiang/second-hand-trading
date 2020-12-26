@@ -100,7 +100,7 @@
 
                                     <div class="idle-item-foot">
                                         <div class="idle-prive">￥{{item.idlePrice}}
-                                            {{activeName==='5'?orderStatus:''}}
+                                            {{(activeName==='4'||activeName==='5')?orderStatus[item.orderStatus]:''}}
                                         </div>
                                         <el-button v-if="activeName!=='4'&&activeName!=='5'" type="danger" size="mini"
                                                    plain @click.stop="handle(activeName,item,index)">{{handleName[activeName-1]}}
@@ -238,7 +238,7 @@
                     [],
                     [],
                 ],
-                orderStatus: '已支付',
+                orderStatus: ['待付款', '待发货', '待收货', '已完成', '已取消'],
                 userInfoDialogVisible: false,
                 notUserNicknameEdit: true,
                 userPasswordEdit: false,
@@ -273,8 +273,48 @@
             }
             this.getAddressData();
             this.getIdleItemData();
+            this.getMyOrder();
+            this.getMySoldIdle();
         },
         methods: {
+            getMySoldIdle(){
+                this.$api.getMySoldIdle().then(res=>{
+                    if (res.status_code === 1){
+                        console.log('getMySoldIdle',res.data);
+                        for (let i = 0; i < res.data.length; i++) {
+                            let pictureList = JSON.parse(res.data[i].idleItem.pictureList);
+                            this.dataList[3].push({
+                                id:res.data[i].id,
+                                imgUrl:pictureList.length > 0 ? pictureList[0] : '',
+                                idleName:res.data[i].idleItem.idleName,
+                                idleDetails:res.data[i].idleItem.idleDetails,
+                                timeStr:res.data[i].createTime.substring(0, 10) + " " + res.data[i].createTime.substring(11, 19),
+                                idlePrice:res.data[i].orderPrice,
+                                orderStatus:res.data[i].orderStatus
+                            });
+                        }
+                    }
+                })
+            },
+            getMyOrder(){
+                this.$api.getMyOrder().then(res=>{
+                    if (res.status_code === 1){
+                        console.log('getMyOrder',res.data);
+                        for (let i = 0; i < res.data.length; i++) {
+                            let pictureList = JSON.parse(res.data[i].idleItem.pictureList);
+                            this.dataList[4].push({
+                                id:res.data[i].id,
+                                imgUrl:pictureList.length > 0 ? pictureList[0] : '',
+                                idleName:res.data[i].idleItem.idleName,
+                                idleDetails:res.data[i].idleItem.idleDetails,
+                                timeStr:res.data[i].createTime.substring(0, 10) + " " + res.data[i].createTime.substring(11, 19),
+                                idlePrice:res.data[i].orderPrice,
+                                orderStatus:res.data[i].orderStatus
+                            });
+                        }
+                    }
+                })
+            },
             getIdleItemData() {
                 this.$api.getAllIdleItem().then(res => {
                     console.log(res);
@@ -285,6 +325,7 @@
                             res.data[i].imgUrl = pictureList.length > 0 ? pictureList[0] : '';
                             if (res.data[i].idleStatus === 1) {
                                 this.dataList[0].push(res.data[i]);
+                                this.dataList[2].push(res.data[i]);
                             } else if (res.data[i].idleStatus === 2) {
                                 this.dataList[1].push(res.data[i]);
                             }
@@ -402,7 +443,7 @@
                 this.update(row);
             },
             toDetails(activeName, item) {
-                if (activeName === '5') {
+                if (activeName === '4'||activeName === '5') {
                     this.$router.push({path: '/order', query: {id: item.id}});
                 } else {
                     this.$router.push({path: '/details', query: {id: item.id}});

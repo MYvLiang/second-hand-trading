@@ -27,7 +27,7 @@
     select
     <include refid="Base_Column_List" />
     from sh_idle_item
-    where user_id = #{userId,jdbcType=BIGINT} and idle_status!=0
+    where user_id = #{userId,jdbcType=BIGINT} and idle_status!=0 order by id desc
   </select>
   <select id="countIdleItem"  resultType="int">
     select COUNT(*) from sh_idle_item
@@ -41,13 +41,22 @@
     select
     <include refid="Base_Column_List" />
     from sh_idle_item
-    where (idle_name LIKE "%"#{findValue}"%" or idle_details LIKE "%"#{findValue}"%") and idle_status = 1 limit #{begin}, #{nums}
+    where (idle_name LIKE "%"#{findValue}"%" or idle_details LIKE "%"#{findValue}"%") and idle_status = 1 order by id desc limit #{begin}, #{nums}
   </select>
   <select id="findIdleItemByLable" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from sh_idle_item
-    where idle_label = #{idleLabel}  and idle_status = 1 limit #{begin}, #{nums}
+    where idle_label = #{idleLabel}  and idle_status = 1 order by id desc limit #{begin}, #{nums}
+  </select>
+  <select id="findIdleByList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sh_idle_item where id in
+    <foreach collection="idList" index="index" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+    order by id desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from sh_idle_item

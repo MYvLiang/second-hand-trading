@@ -16,7 +16,7 @@
                     </div>
                     <div class="details-header-buy" :style="'width:'+(isMaster?'150px;':'280px;')">
                         <div style="color: red;font-size: 18px;font-weight: 600;">￥{{idleItemInfo.idlePrice}}</div>
-                        <el-button v-if="!isMaster" type="danger" plain>立即购买</el-button>
+                        <el-button v-if="!isMaster" type="danger" plain @click="buyButton(idleItemInfo)">立即购买</el-button>
                         <el-button v-if="!isMaster" type="primary" plain>收藏</el-button>
                         <el-button v-if="isMaster&&idleItemInfo.idleStatus===1" type="danger" @click="changeStatus(idleItemInfo,2)" plain>下架</el-button>
                         <el-button v-if="isMaster&&idleItemInfo.idleStatus===2" type="primary" @click="changeStatus(idleItemInfo,1)" plain>重新上架</el-button>
@@ -169,7 +169,20 @@
                         this.idleItemInfo.idleStatus=status;
                     }
                 });
-            }
+            },
+            buyButton(idleItemInfo){
+                this.$api.addOrder({
+                    idleId:idleItemInfo.id,
+                    orderPrice:idleItemInfo.idlePrice,
+                }).then(res=>{
+                    console.log(res);
+                    if(res.status_code===1){
+                        this.$router.push({path: '/order', query: {id: res.data.id}});
+                    }
+                }).catch(e=>{
+
+                })
+            },
         },
     }
 </script>

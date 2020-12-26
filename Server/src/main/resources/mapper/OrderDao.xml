@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.second.hand.trading.server.dao.OrderDao">
+  <resultMap id="BaseResultMap" type="com.second.hand.trading.server.model.OrderModel">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="idle_id" jdbcType="BIGINT" property="idleId" />
+    <result column="order_price" jdbcType="DECIMAL" property="orderPrice" />
+    <result column="payment_status" jdbcType="TINYINT" property="paymentStatus" />
+    <result column="payment_way" jdbcType="VARCHAR" property="paymentWay" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="payment_time" jdbcType="TIMESTAMP" property="paymentTime" />
+    <result column="order_status" jdbcType="TINYINT" property="orderStatus" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_number, user_id, idle_id, order_price, payment_status, payment_way, create_time, 
+    payment_time, order_status, is_deleted
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sh_order
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getMyOrder" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sh_order
+    where user_id = #{userId,jdbcType=BIGINT} order by id desc
+  </select>
+  <select id="findOrderByIdleIdList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sh_order where idle_id in
+    <foreach collection="idleIdList" index="index" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+    order by id desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sh_order
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.second.hand.trading.server.model.OrderModel" useGeneratedKeys="true">
+    insert into sh_order (order_number, user_id, idle_id, 
+      order_price, payment_status, payment_way, 
+      create_time, payment_time, order_status, 
+      is_deleted)
+    values (#{orderNumber,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, #{idleId,jdbcType=BIGINT}, 
+      #{orderPrice,jdbcType=DECIMAL}, #{paymentStatus,jdbcType=TINYINT}, #{paymentWay,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{paymentTime,jdbcType=TIMESTAMP}, #{orderStatus,jdbcType=TINYINT}, 
+      #{isDeleted,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.second.hand.trading.server.model.OrderModel" useGeneratedKeys="true">
+    insert into sh_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderNumber != null">
+        order_number,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="idleId != null">
+        idle_id,
+      </if>
+      <if test="orderPrice != null">
+        order_price,
+      </if>
+      <if test="paymentStatus != null">
+        payment_status,
+      </if>
+      <if test="paymentWay != null">
+        payment_way,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="paymentTime != null">
+        payment_time,
+      </if>
+      <if test="orderStatus != null">
+        order_status,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderNumber != null">
+        #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="idleId != null">
+        #{idleId,jdbcType=BIGINT},
+      </if>
+      <if test="orderPrice != null">
+        #{orderPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="paymentStatus != null">
+        #{paymentStatus,jdbcType=TINYINT},
+      </if>
+      <if test="paymentWay != null">
+        #{paymentWay,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentTime != null">
+        #{paymentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderStatus != null">
+        #{orderStatus,jdbcType=TINYINT},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.second.hand.trading.server.model.OrderModel">
+    update sh_order
+    <set>
+      <if test="orderNumber != null">
+        order_number = #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="idleId != null">
+        idle_id = #{idleId,jdbcType=BIGINT},
+      </if>
+      <if test="orderPrice != null">
+        order_price = #{orderPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="paymentStatus != null">
+        payment_status = #{paymentStatus,jdbcType=TINYINT},
+      </if>
+      <if test="paymentWay != null">
+        payment_way = #{paymentWay,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentTime != null">
+        payment_time = #{paymentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderStatus != null">
+        order_status = #{orderStatus,jdbcType=TINYINT},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.second.hand.trading.server.model.OrderModel">
+    update sh_order
+    set order_number = #{orderNumber,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=BIGINT},
+      idle_id = #{idleId,jdbcType=BIGINT},
+      order_price = #{orderPrice,jdbcType=DECIMAL},
+      payment_status = #{paymentStatus,jdbcType=TINYINT},
+      payment_way = #{paymentWay,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      payment_time = #{paymentTime,jdbcType=TIMESTAMP},
+      order_status = #{orderStatus,jdbcType=TINYINT},
+      is_deleted = #{isDeleted,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

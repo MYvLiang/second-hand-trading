@@ -2,6 +2,7 @@ package com.second.hand.trading.server.controller;
 
 import com.second.hand.trading.server.enums.ErrorMsg;
 import com.second.hand.trading.server.service.FileService;
+import com.second.hand.trading.server.utils.IdFactoryUtil;
 import com.second.hand.trading.server.vo.ResultVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +36,7 @@ public class FileController {
 
     @PostMapping("/file")
     public ResultVo uploadFile(@RequestParam("file") MultipartFile multipartFile) {
-        String uuid="file"+System.currentTimeMillis();
+        String uuid="file"+ IdFactoryUtil.getFileId();
         String fileName= uuid+ multipartFile.getOriginalFilename();
         try {
             if (fileService.uploadFile(multipartFile,fileName)) {

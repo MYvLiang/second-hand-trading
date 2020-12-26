@@ -96,6 +96,12 @@
         },
         methods: {
             findIdleTiem(page){
+                const loading = this.$loading({
+                    lock: true,
+                    text: '加载数据中',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0)'
+                });
                 if(this.labelName>0){
                     this.$api.findIdleTiemByLable({
                         idleLabel:this.labelName,
@@ -114,6 +120,8 @@
                         console.log(this.totalItem);
                     }).catch(e => {
                         console.log(e)
+                    }).finally(()=>{
+                        loading.close();
                     })
                 }else{
                     this.$api.findIdleTiem({
@@ -132,6 +140,8 @@
                         console.log(this.totalItem);
                     }).catch(e => {
                         console.log(e)
+                    }).finally(()=>{
+                        loading.close();
                     })
                 }
             },

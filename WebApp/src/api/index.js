@@ -113,6 +113,41 @@ const api = {
             data: data
         });
     },
+    addOrder(data) {
+        return request({
+            url: '/order/add',
+            method: 'post',
+            data: data
+        });
+    },
+    getOrder(query) {
+        return request({
+            url: '/order/info',
+            method: 'get',
+            params: query
+        });
+    },
+    updateOrder(data) {
+        return request({
+            url: '/order/update',
+            method: 'post',
+            data: data
+        });
+    },
+    getMyOrder(query) {
+        return request({
+            url: '/order/my',
+            method: 'get',
+            params: query
+        });
+    },
+    getMySoldIdle(query) {
+        return request({
+            url: '/order/my-sold',
+            method: 'get',
+            params: query
+        });
+    },
 };
 
 

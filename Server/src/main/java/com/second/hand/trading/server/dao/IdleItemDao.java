@@ -28,4 +28,6 @@ public interface IdleItemDao {
     int updateByPrimaryKeySelective(IdleItemModel record);
 
     int updateByPrimaryKey(IdleItemModel record);
+
+    List<IdleItemModel> findIdleByList(List<Long> idList);
 }

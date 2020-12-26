@@ -33,7 +33,9 @@ public class IdleItemServiceImpl implements IdleItemService {
 
     public IdleItemModel getIdleItem(Long id) {
         IdleItemModel idleItemModel=idleItemDao.selectByPrimaryKey(id);
-        idleItemModel.setUser(userDao.selectByPrimaryKey(idleItemModel.getUserId()));
+        if(idleItemModel!=null){
+            idleItemModel.setUser(userDao.selectByPrimaryKey(idleItemModel.getUserId()));
+        }
         return idleItemModel;
     }
 
