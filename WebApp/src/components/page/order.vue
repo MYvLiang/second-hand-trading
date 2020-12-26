@@ -271,7 +271,7 @@
 
 <style scoped>
     .order-page-container {
-        min-height: 80vh;
+        min-height: 85vh;
     }
 
     .idle-info-container {

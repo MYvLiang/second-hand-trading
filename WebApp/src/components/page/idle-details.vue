@@ -190,7 +190,7 @@
 
 <style scoped>
     .idle-details-container {
-        min-height: 80vh;
+        min-height: 85vh;
     }
 
     .details-header {

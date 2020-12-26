@@ -2,6 +2,7 @@
     <div>
         <app-head></app-head>
         <app-body>
+            <div style="min-height: 85vh;">
             <el-tabs v-model="labelName" type="card" @tab-click="handleClick">
                 <el-tab-pane label="全部" name="0"></el-tab-pane>
                 <el-tab-pane label="类别1" name="1"></el-tab-pane>
@@ -58,6 +59,7 @@
                         layout="prev, pager, next, jumper"
                         :total="totalItem">
                 </el-pagination>
+            </div>
             </div>
             <app-foot></app-foot>
         </app-body>
@@ -172,7 +174,7 @@
     .fenye {
         display: flex;
         justify-content: center;
-        height: 80px;
+        height: 60px;
         align-items: center;
     }
 

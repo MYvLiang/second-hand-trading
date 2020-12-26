@@ -3,6 +3,7 @@ package com.second.hand.trading.server;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -24,4 +25,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .exposedHeaders(HttpHeaders.SET_COOKIE);
     }
 
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LogCostInterceptor()).addPathPatterns("/**");
+    }
 }

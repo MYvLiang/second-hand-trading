@@ -592,7 +592,7 @@
     }
 
     .idle-container-list {
-        min-height: 45vh;
+        min-height: 55vh;
     }
 
     .idle-container-list-item {

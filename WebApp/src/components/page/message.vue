@@ -56,7 +56,7 @@
 
 <style scoped>
     .message-container{
-        min-height: 80vh;
+        min-height: 85vh;
         padding: 0 20px;
     }
     .message-container-title{

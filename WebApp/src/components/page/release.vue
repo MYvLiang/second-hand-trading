@@ -179,7 +179,7 @@
 
 <style scoped>
     .release-idle-container {
-        min-height: 80vh;
+        min-height: 85vh;
     }
 
     .release-idle-container-title {

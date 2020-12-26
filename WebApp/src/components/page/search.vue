@@ -2,8 +2,9 @@
     <div>
         <app-head :searchInput="searchValue"></app-head>
         <app-body>
-            <div style="min-height: 80vh;">
-                <div style="margin: 0 20px;">
+            <div style="min-height: 85vh;">
+                <div style="margin: 0 20px;padding-top: 20px;">
+                    <div style="text-align: center;color: #555555;padding: 20px;" v-if="idleList.length===0">暂无匹配的闲置物品</div>
                     <el-row :gutter="30">
                         <el-col :span="6" v-for="(idle,index) in idleList">
                             <div class="idle-card" @click="toDetails(idle)">
@@ -134,7 +135,7 @@
     .fenye {
         display: flex;
         justify-content: center;
-        height: 80px;
+        height: 60px;
         align-items: center;
     }
 

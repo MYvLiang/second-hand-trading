@@ -15,7 +15,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        height: 70px;
+        height: 40px;
         padding-top: 10px;
     }
 
