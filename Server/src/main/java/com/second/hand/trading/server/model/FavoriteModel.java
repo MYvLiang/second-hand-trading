@@ -28,6 +28,8 @@ public class FavoriteModel implements Serializable {
      */
     private Long idleId;
 
+    private IdleItemModel idleItem;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -60,6 +62,14 @@ public class FavoriteModel implements Serializable {
 
     public void setIdleId(Long idleId) {
         this.idleId = idleId;
+    }
+
+    public IdleItemModel getIdleItem() {
+        return idleItem;
+    }
+
+    public void setIdleItem(IdleItemModel idleItem) {
+        this.idleItem = idleItem;
     }
 
     @Override

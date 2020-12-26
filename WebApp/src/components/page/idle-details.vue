@@ -17,7 +17,7 @@
                     <div class="details-header-buy" :style="'width:'+(isMaster?'150px;':'280px;')">
                         <div style="color: red;font-size: 18px;font-weight: 600;">￥{{idleItemInfo.idlePrice}}</div>
                         <el-button v-if="!isMaster" type="danger" plain @click="buyButton(idleItemInfo)">立即购买</el-button>
-                        <el-button v-if="!isMaster" type="primary" plain>收藏</el-button>
+                        <el-button v-if="!isMaster" type="primary" plain @click="favoriteButton(idleItemInfo)">{{isFavorite?'取消收藏':'收藏'}}</el-button>
                         <el-button v-if="isMaster&&idleItemInfo.idleStatus===1" type="danger" @click="changeStatus(idleItemInfo,2)" plain>下架</el-button>
                         <el-button v-if="isMaster&&idleItemInfo.idleStatus===2" type="primary" @click="changeStatus(idleItemInfo,1)" plain>重新上架</el-button>
                     </div>
@@ -111,7 +111,9 @@
                         signInTime:''
                     },
                 },
-                isMaster:false
+                isMaster:false,
+                isFavorite:true,
+                favoriteId:0
             };
         },
         created(){
@@ -136,6 +138,7 @@
                         console.log('isMaster');
                         this.isMaster=true;
                     }
+                    this.checkFavorite();
                 }
                 $('html,body').animate({
                     scrollTop: 0
@@ -143,6 +146,17 @@
             });
         },
         methods: {
+            checkFavorite(){
+                this.$api.checkFavorite({
+                    idleId:this.idleItemInfo.id
+                }).then(res=>{
+                    if(!res.data){
+                        this.isFavorite=false;
+                    }else {
+                        this.favoriteId=res.data;
+                    }
+                })
+            },
             getCookie(cname){
                 var name = cname + "=";
                 var ca = document.cookie.split(';');
@@ -183,6 +197,38 @@
                 }).catch(e=>{
 
                 })
+            },
+            favoriteButton(idleItemInfo){
+                if(this.isFavorite){
+                    this.$api.deleteFavorite({
+                        id: this.favoriteId
+                    }).then(res=>{
+                        console.log(res);
+                        if(res.status_code===1){
+                            this.$message({
+                                message: '已取消收藏！',
+                                type: 'success'
+                            });
+                            this.isFavorite=false;
+                        }
+                    }).catch(e=>{
+                    })
+                }else {
+                    this.$api.addFavorite({
+                        idleId:idleItemInfo.id
+                    }).then(res=>{
+                        console.log(res);
+                        if(res.status_code===1){
+                            this.$message({
+                                message: '已收藏！',
+                                type: 'success'
+                            });
+                            this.isFavorite=true;
+                            this.favoriteId=res.data;
+                        }
+                    }).catch(e=>{
+                    })
+                }
             },
         },
     }

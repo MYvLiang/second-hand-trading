@@ -169,6 +169,34 @@ const api = {
             params: query
         });
     },
+    addFavorite(data) {
+        return request({
+            url: '/favorite/add',
+            method: 'post',
+            data: data
+        });
+    },
+    getMyFavorite(query) {
+        return request({
+            url: '/favorite/my',
+            method: 'get',
+            params: query
+        });
+    },
+    deleteFavorite(query) {
+        return request({
+            url: '/favorite/delete',
+            method: 'get',
+            params: query
+        });
+    },
+    checkFavorite(query) {
+        return request({
+            url: '/favorite/check',
+            method: 'get',
+            params: query
+        });
+    },
 };
 
 

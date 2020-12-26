@@ -16,6 +16,17 @@
     from sh_favorite
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="getMyFavorite" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sh_favorite
+    where user_id = #{userId,jdbcType=BIGINT} order by id desc
+  </select>
+  <select id="checkFavorite" resultType="Integer">
+    select id
+    from sh_favorite
+    where user_id = #{userId,jdbcType=BIGINT} and idle_id = #{idleId,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from sh_favorite
     where id = #{id,jdbcType=BIGINT}

@@ -275,8 +275,28 @@
             this.getIdleItemData();
             this.getMyOrder();
             this.getMySoldIdle();
+            this.getMyFavorite();
         },
         methods: {
+            getMyFavorite(){
+                this.$api.getMyFavorite().then(res=>{
+                    console.log('getMyFavorite',res);
+                    if (res.status_code === 1){
+                        for (let i = 0; i < res.data.length; i++) {
+                            let pictureList = JSON.parse(res.data[i].idleItem.pictureList);
+                            this.dataList[2].push({
+                                favoriteId:res.data[i].id,
+                                id:res.data[i].idleItem.id,
+                                imgUrl:pictureList.length > 0 ? pictureList[0] : '',
+                                idleName:res.data[i].idleItem.idleName,
+                                idleDetails:res.data[i].idleItem.idleDetails,
+                                timeStr:res.data[i].createTime.substring(0, 10) + " " + res.data[i].createTime.substring(11, 19),
+                                idlePrice:res.data[i].idleItem.idlePrice
+                            });
+                        }
+                    }
+                })
+            },
             getMySoldIdle(){
                 this.$api.getMySoldIdle().then(res=>{
                     if (res.status_code === 1){
@@ -325,7 +345,6 @@
                             res.data[i].imgUrl = pictureList.length > 0 ? pictureList[0] : '';
                             if (res.data[i].idleStatus === 1) {
                                 this.dataList[0].push(res.data[i]);
-                                this.dataList[2].push(res.data[i]);
                             } else if (res.data[i].idleStatus === 2) {
                                 this.dataList[1].push(res.data[i]);
                             }
@@ -473,6 +492,20 @@
                             this.dataList[1].splice(index,1);
                         }
                     });
+                }else if(activeName==='3'){
+                    this.$api.deleteFavorite({
+                        id: item.favoriteId
+                    }).then(res=>{
+                        console.log(res);
+                        if(res.status_code===1){
+                            this.$message({
+                                message: '已取消收藏！',
+                                type: 'success'
+                            });
+                            this.dataList[2].splice(index,1);
+                        }
+                    }).catch(e=>{
+                    })
                 }
             },
             fileHandleSuccess(response, file, fileList) {
