@@ -197,6 +197,41 @@ const api = {
             params: query
         });
     },
+    sendMessage(data) {
+        return request({
+            url: '/message/send',
+            method: 'post',
+            data: data
+        });
+    },
+    getMessage(query) {
+        return request({
+            url: '/message/info',
+            method: 'get',
+            params: query
+        });
+    },
+    getAllIdleMessage(query) {
+        return request({
+            url: '/message/idle',
+            method: 'get',
+            params: query
+        });
+    },
+    getAllMyMessage(query) {
+        return request({
+            url: '/message/my',
+            method: 'get',
+            params: query
+        });
+    },
+    deleteMessage(query) {
+        return request({
+            url: '/message/delete',
+            method: 'get',
+            params: query
+        });
+    },
 };
 
 

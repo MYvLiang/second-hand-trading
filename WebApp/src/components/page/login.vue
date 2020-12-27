@@ -33,8 +33,8 @@
         data() {
             return {
                 userForm: {
-                    accountNumber: '17322611234',
-                    userPassword: '123456'
+                    accountNumber: '',
+                    userPassword: ''
                 }
             };
         },

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.second.hand.trading.server.dao.MessageDao">
+  <resultMap id="BaseResultMap" type="com.second.hand.trading.server.model.MessageModel">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="idle_id" jdbcType="BIGINT" property="idleId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="to_user" jdbcType="BIGINT" property="toUser" />
+    <result column="to_message" jdbcType="BIGINT" property="toMessage" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, idle_id, content, create_time, to_user, to_message
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sh_message
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getMyMessage" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sh_message
+    where to_user = #{userId,jdbcType=BIGINT} order by id desc
+  </select>
+  <select id="getIdleMessage" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sh_message
+    where idle_id = #{idleId,jdbcType=BIGINT} order by id desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sh_message
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.second.hand.trading.server.model.MessageModel" useGeneratedKeys="true">
+    insert into sh_message (user_id, idle_id, content, 
+      create_time, to_user, to_message
+      )
+    values (#{userId,jdbcType=BIGINT}, #{idleId,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{toUser,jdbcType=BIGINT}, #{toMessage,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.second.hand.trading.server.model.MessageModel" useGeneratedKeys="true">
+    insert into sh_message
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="idleId != null">
+        idle_id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="toUser != null">
+        to_user,
+      </if>
+      <if test="toMessage != null">
+        to_message,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="idleId != null">
+        #{idleId,jdbcType=BIGINT},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="toUser != null">
+        #{toUser,jdbcType=BIGINT},
+      </if>
+      <if test="toMessage != null">
+        #{toMessage,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.second.hand.trading.server.model.MessageModel">
+    update sh_message
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="idleId != null">
+        idle_id = #{idleId,jdbcType=BIGINT},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="toUser != null">
+        to_user = #{toUser,jdbcType=BIGINT},
+      </if>
+      <if test="toMessage != null">
+        to_message = #{toMessage,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.second.hand.trading.server.model.MessageModel">
+    update sh_message
+    set user_id = #{userId,jdbcType=BIGINT},
+      idle_id = #{idleId,jdbcType=BIGINT},
+      content = #{content,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      to_user = #{toUser,jdbcType=BIGINT},
+      to_message = #{toMessage,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

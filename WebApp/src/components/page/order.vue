@@ -8,10 +8,11 @@
                             style="width: 150px; height: 150px;"
                             :src="orderInfo.idleItem.imgUrl"
                             fit="cover"></el-image>
-                    <div class="idle-info-title">{{orderInfo.idleItem.idleName}}</div>
+                    <div class="idle-info-title">{{orderInfo.userId==userId?'买到的':'卖出的'}}：{{orderInfo.idleItem.idleName}}</div>
                     <div class="idle-info-price">￥{{orderInfo.orderPrice}}</div>
+
                 </div>
-                <div class="address-container" @click.stop="selectAddressDialog" :style="orderInfo.orderStatus===0?'cursor: pointer;':''">
+                <div class="address-container" @click.stop="selectAddressDialog" :style="orderInfo.userId==userId&&orderInfo.orderStatus===0?'cursor: pointer;':''">
                     <div class="address-title">收货地址: {{addressInfo.consigneeName}} {{addressInfo.consigneePhone}}</div>
                     <div class="address-detials">{{addressInfo.detailAddress}}</div>
                     <el-button v-if="!addressInfo.detailAddress" @click.stop="selectAddressDialog" type="primary" plain>选择收货地址</el-button>
@@ -19,7 +20,7 @@
                 <el-dialog
                         title="选择地址"
                         :visible.sync="addressDialogVisible"
-                        width="60%">
+                        width="800px">
                     <el-table
                             stripe
                             empty-text="无地址信息，请先在个人中心添加地址"
@@ -153,6 +154,8 @@
                         if(res.data){
                             this.addressInfo= res.data;
                             this.addressInfo.update=true;
+                        }else{
+                            this.getAddressData();
                         }
                     })
                 }
@@ -173,22 +176,31 @@
                 this.$router.replace({path: 'details', query: {id: id}});
             },
             selectAddressDialog(){
-                if(this.orderInfo.orderStatus===0){
+                if(this.orderInfo.userId==this.userId&&this.orderInfo.orderStatus===0){
                     this.addressDialogVisible=true;
                     if(this.addressData.length===0){
-                        this.$api.getAddress().then(res => {
-                            if (res.status_code === 1) {
-                                let data = res.data;
-                                for (let i = 0; i < data.length; i++) {
-                                    data[i].detailAddressText = data[i].provinceName + data[i].cityName + data[i].regionName + data[i].detailAddress;
-                                    data[i].defaultAddress = data[i].defaultFlag ? '默认地址' : '设为默认';
-                                }
-                                console.log(data);
-                                this.addressData = data;
-                            }
-                        })
+                        this.getAddressData();
                     }
                 }
+            },
+            getAddressData(){
+                this.$api.getAddress().then(res => {
+                    if (res.status_code === 1) {
+                        let data = res.data;
+                        for (let i = 0; i < data.length; i++) {
+                            data[i].detailAddressText = data[i].provinceName + data[i].cityName + data[i].regionName + data[i].detailAddress;
+                        }
+                        console.log(data);
+                        this.addressData = data;
+                        if(!this.addressInfo.update){
+                            for(let i=0;i<data.length;i++){
+                                if(data[i].defaultFlag){
+                                    this.selectAddress(i,data[i]);
+                                }
+                            }
+                        }
+                    }
+                })
             },
             selectAddress(i,item){
                 this.addressDialogVisible=false;
@@ -213,6 +225,8 @@
                         if(res.status_code===1){
                             this.addressInfo.update=true;
                             this.addressInfo.id=res.data.id;
+                        }else {
+                            this.$message.error(res.msg)
                         }
                     })
                 }

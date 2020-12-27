@@ -5,11 +5,11 @@
             <div style="min-height: 85vh;">
             <el-tabs v-model="labelName" type="card" @tab-click="handleClick">
                 <el-tab-pane label="全部" name="0"></el-tab-pane>
-                <el-tab-pane label="类别1" name="1"></el-tab-pane>
-                <el-tab-pane label="类别2" name="2"></el-tab-pane>
-                <el-tab-pane label="类别3" name="3"></el-tab-pane>
-                <el-tab-pane label="类别4" name="4"></el-tab-pane>
-                <el-tab-pane label="类别5" name="5"></el-tab-pane>
+                <el-tab-pane label="数码" name="1"></el-tab-pane>
+                <el-tab-pane label="家电" name="2"></el-tab-pane>
+                <el-tab-pane label="户外" name="3"></el-tab-pane>
+                <el-tab-pane label="图书" name="4"></el-tab-pane>
+                <el-tab-pane label="其他" name="5"></el-tab-pane>
             </el-tabs>
             <div style="margin: 0 20px;">
                 <el-row :gutter="30">
@@ -57,7 +57,7 @@
                         :current-page.sync="currentPage"
                         :page-size="8"
                         layout="prev, pager, next, jumper"
-                        :total="totalItem">
+                        :total="totalItem*20">
                 </el-pagination>
             </div>
             </div>
@@ -92,8 +92,12 @@
         watch:{
             $route(to,from){
                 this.labelName=to.query.labelName;
+                let val=parseInt(to.query.page)?parseInt(to.query.page):1;
+                let totalPage=parseInt(this.totalItem/8)+1;
+                val=parseInt(val%totalPage);
+                val=val===0?totalPage:val;
                 this.currentPage=parseInt(to.query.page)?parseInt(to.query.page):1;
-                this.findIdleTiem(parseInt(this.currentPage));
+                this.findIdleTiem(val);
             }
         },
         methods: {

@@ -29,7 +29,6 @@ public class FavoriteController {
                                     @RequestBody FavoriteModel favoriteModel){
         favoriteModel.setUserId(Long.valueOf(shUserId));
         favoriteModel.setCreateTime(new Date());
-        System.out.println(favoriteModel.getCreateTime());
         if(favoriteService.addFavorite(favoriteModel)){
             return ResultVo.success(favoriteModel.getId());
         }
@@ -59,7 +58,6 @@ public class FavoriteController {
     public ResultVo getMyFavorite(@CookieValue("shUserId")
                                     @NotNull(message = "登录异常 请重新登录")
                                     @NotEmpty(message = "登录异常 请重新登录") String shUserId){
-        System.out.println(favoriteService.getAllFavorite(Long.valueOf(shUserId)).get(0).getCreateTime());
         return ResultVo.success(favoriteService.getAllFavorite(Long.valueOf(shUserId)));
     }
 }

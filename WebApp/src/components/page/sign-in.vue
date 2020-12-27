@@ -3,22 +3,22 @@
         <el-card class="box-card">
             <div class="sign-in-body">
                 <div class="sign-in-title">注册</div>
-                <el-input placeholder="请输入昵称..." v-model="userInfo.nickname" class="sign-in-input" clearable>
+                <el-input placeholder="请输入昵称..." maxlength="30"  v-model="userInfo.nickname" class="sign-in-input" clearable>
                     <template slot="prepend">
                         <div class="el-icon-user-solid"></div>
                     </template>
                 </el-input>
-                <el-input placeholder="请输入手机号..." v-model="userInfo.accountNumber" class="sign-in-input" clearable>
+                <el-input placeholder="请输入手机号..." maxlength="11" v-model="userInfo.accountNumber" class="sign-in-input" clearable>
                     <template slot="prepend">
                         <div class="el-icon-phone"></div>
                     </template>
                 </el-input>
-                <el-input placeholder="请输入密码..." v-model="userInfo.userPassword" class="sign-in-input" clearable>
+                <el-input placeholder="请输入密码..." show-password maxlength="16" v-model="userInfo.userPassword" class="sign-in-input" clearable>
                     <template slot="prepend">
                         <div class="el-icon-lock"></div>
                     </template>
                 </el-input>
-                <el-input placeholder="请再次输入密码..." v-model="userPassword2" @keyup.enter.native="signIn" class="sign-in-input" clearable>
+                <el-input placeholder="请再次输入密码..." show-password maxlength="16" v-model="userPassword2" @keyup.enter.native="signIn" class="sign-in-input" clearable>
                     <template slot="prepend">
                         <div class="el-icon-lock"></div>
                     </template>
@@ -41,9 +41,9 @@
             return{
                 userPassword2:'',
                 userInfo:{
-                    accountNumber:'17322611236',
-                    userPassword:'123456',
-                    nickname:'shiny3'
+                    accountNumber:'',
+                    userPassword:'',
+                    nickname:''
                 }
             };
         },

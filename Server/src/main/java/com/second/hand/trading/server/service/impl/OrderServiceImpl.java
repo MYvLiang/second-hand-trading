@@ -6,6 +6,7 @@ import com.second.hand.trading.server.model.IdleItemModel;
 import com.second.hand.trading.server.model.OrderModel;
 import com.second.hand.trading.server.service.OrderService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -26,8 +27,19 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private IdleItemDao idleItemDao;
 
+    @Transactional
     public boolean addOrder(OrderModel orderModel){
-        return orderDao.insert(orderModel)==1;
+        IdleItemModel idleItemModel=idleItemDao.selectByPrimaryKey(orderModel.getIdleId());
+        System.out.println(idleItemModel.getIdleStatus());
+        if(idleItemModel.getIdleStatus()!=1){
+            return false;
+        }
+        IdleItemModel idleItem=new IdleItemModel();
+        idleItem.setId(orderModel.getIdleId());
+        idleItem.setUserId(idleItemModel.getUserId());
+        idleItem.setIdleStatus((byte)2);
+        return orderDao.insert(orderModel)==1&&
+                idleItemDao.updateByPrimaryKeySelective(idleItem)==1;
     }
 
     public OrderModel getOrder(Long id){

@@ -105,19 +105,19 @@
                 selectedOptions:[],
                 options2: [{
                     value: 1,
-                    label: '类别1'
+                    label: '数码'
                 }, {
                     value: 2,
-                    label: '类别2'
+                    label: '家电'
                 }, {
                     value: 3,
-                    label: '类别3'
+                    label: '户外'
                 }, {
                     value: 4,
-                    label: '类别4'
+                    label: '图书'
                 }, {
                     value: 5,
-                    label: '类别5'
+                    label: '其他'
                 }],
                 imgList:[],
                 idleItemInfo:{
@@ -155,20 +155,29 @@
             releaseButton(){
                 this.idleItemInfo.pictureList=JSON.stringify(this.imgList);
                 console.log(this.idleItemInfo);
-                this.$api.addIdleItem(this.idleItemInfo).then(res=>{
-                    if (res.status_code === 1) {
-                        this.$message({
-                            message: '发布成功！',
-                            type: 'success'
-                        });
-                        console.log(res.data);
-                        this.$router.replace({path: '/details', query: {id: res.data.id}});
-                    } else {
-                        this.$message.error('发布失败！'+res.msg);
-                    }
-                }).catch(e=>{
-                    this.$message.error('网络异常！');
-                })
+                if(this.idleItemInfo.idleName&&
+                    this.idleItemInfo.idleDetails&&
+                    this.idleItemInfo.idlePlace&&
+                    this.idleItemInfo.idleLabel&&
+                    this.idleItemInfo.idlePrice){
+                    this.$api.addIdleItem(this.idleItemInfo).then(res=>{
+                        if (res.status_code === 1) {
+                            this.$message({
+                                message: '发布成功！',
+                                type: 'success'
+                            });
+                            console.log(res.data);
+                            this.$router.replace({path: '/details', query: {id: res.data.id}});
+                        } else {
+                            this.$message.error('发布失败！'+res.msg);
+                        }
+                    }).catch(e=>{
+                        this.$message.error('请填写完整信息');
+                    })
+                }else {
+                    this.$message.error('请填写完整信息！');
+                }
+
             },
             handleExceed(files, fileList) {
                 this.$message.warning(`限制10张图片，本次选择了 ${files.length} 张图，共选择了 ${files.length + fileList.length} 张图`);

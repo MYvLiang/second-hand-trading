@@ -16,8 +16,9 @@
                     </div>
                     <div class="details-header-buy" :style="'width:'+(isMaster?'150px;':'280px;')">
                         <div style="color: red;font-size: 18px;font-weight: 600;">￥{{idleItemInfo.idlePrice}}</div>
-                        <el-button v-if="!isMaster" type="danger" plain @click="buyButton(idleItemInfo)">立即购买</el-button>
-                        <el-button v-if="!isMaster" type="primary" plain @click="favoriteButton(idleItemInfo)">{{isFavorite?'取消收藏':'收藏'}}</el-button>
+                        <div v-if="!isMaster&&idleItemInfo.idleStatus!==1" style="color: red;font-size: 16px;">闲置已下架或删除</div>
+                        <el-button v-if="!isMaster&&idleItemInfo.idleStatus===1" type="danger" plain @click="buyButton(idleItemInfo)">立即购买</el-button>
+                        <el-button v-if="!isMaster&&idleItemInfo.idleStatus===1" type="primary" plain @click="favoriteButton(idleItemInfo)">{{isFavorite?'取消收藏':'收藏'}}</el-button>
                         <el-button v-if="isMaster&&idleItemInfo.idleStatus===1" type="danger" @click="changeStatus(idleItemInfo,2)" plain>下架</el-button>
                         <el-button v-if="isMaster&&idleItemInfo.idleStatus===2" type="primary" @click="changeStatus(idleItemInfo,1)" plain>重新上架</el-button>
                     </div>
@@ -40,31 +41,34 @@
                     <div class="message-title">全部留言</div>
                     <div class="message-send">
                         <div v-if="isReply" style="padding-bottom: 10px;">
-                            <el-button type="info" @click="isReply=false">回复：哈哈哈哈哈哈哈哈哈 @shiny:  <i class="el-icon-close el-icon--right"></i></el-button>
+                            <el-button type="info" @click="cancelReply">回复：{{replyData.toMessage}} @{{replyData.toUserNickname}} <i class="el-icon-close el-icon--right"></i></el-button>
                         </div>
                         <el-input
                                 type="textarea"
                                 autosize
                                 placeholder="留言提问..."
-                                v-model="textarea2"
+                                v-model="messageContent"
                                 maxlength="200"
                                 show-word-limit>
                         </el-input>
                         <div class="message-send-button">
-                            <el-button plain>发送</el-button>
+                            <el-button plain @click="sendMessage">发送留言</el-button>
                         </div>
                     </div>
                     <div>
-                        <div v-for="(item,index) in [1,2,3,4,5,6,6,6,8]" class="message-container-list">
-                            <div class="message-container-list-left" @click="replyMessage(index)">
+                        <div v-for="(mes,index) in messageList" class="message-container-list">
+                            <div class="message-container-list-left">
                                 <el-image
                                         style="width: 55px; height: 55px;border-radius: 5px;"
-                                        src="https://pic2.zhimg.com/v2-22d4ebddd475020919bb12aa3a6ddaf7_xs.jpg?source=1940ef5c"
+                                        :src="mes.fromU.avatar"
                                         fit="contain"></el-image>
                                 <div class="message-container-list-text">
-                                    <div class="message-nickname">nicheng</div>
-                                    <div class="message-content">哈哈哈哈哈哈哈哈哈哈哈</div>
-                                    <div class="message-time">2020-11-11 20:20</div>
+                                    <div class="message-nickname">{{mes.fromU.nickname}}
+                                        {{mes.toU.nickname?' @'+mes.toU.nickname+'：'+
+                                        mes.toM.content.substring(0,10)+
+                                        (mes.toM.content.length>10?'...':''):''}}</div>
+                                    <div class="message-content" v-html="mes.content">{{mes.content}}</div>
+                                    <div class="message-time">{{mes.createTime}}</div>
                                 </div>
                             </div>
                             <div class="message-container-list-right">
@@ -93,8 +97,15 @@
         },
         data() {
             return {
-                textarea2:'',
+                messageContent:'',
+                toUser:null,
+                toMessage:null,
                 isReply:false,
+                replyData:{
+                    toUserNickname:'',
+                    toMessage:''
+                },
+                messageList:[],
                 idleItemInfo:{
                     id:'',
                     idleName:'',
@@ -139,6 +150,7 @@
                         this.isMaster=true;
                     }
                     this.checkFavorite();
+                    this.getAllIdleMessage();
                 }
                 $('html,body').animate({
                     scrollTop: 0
@@ -146,6 +158,17 @@
             });
         },
         methods: {
+            getAllIdleMessage(){
+                this.$api.getAllIdleMessage({
+                    idleId:this.idleItemInfo.id
+                }).then(res=>{
+                    console.log('getAllIdleMessage',res.data);
+                    if(res.status_code===1){
+                        this.messageList=res.data;
+                    }
+                }).catch(()=>{
+                })
+            },
             checkFavorite(){
                 this.$api.checkFavorite({
                     idleId:this.idleItemInfo.id
@@ -168,11 +191,14 @@
                 return "";
             },
             replyMessage(index){
-                console.log('回复',index);
                 $('html,body').animate({
                     scrollTop: $("#replyMessageLocation").offset().top-600
                 }, {duration: 500, easing: "swing"});
                 this.isReply=true;
+                this.replyData.toUserNickname=this.messageList[index].fromU.nickname;
+                this.replyData.toMessage=this.messageList[index].content.substring(0,10)+(this.messageList[index].content.length>10?'...':'');
+                this.toUser=this.messageList[index].userId;
+                this.toMessage=this.messageList[index].id;
             },
             changeStatus(idle,status){
                 this.$api.updateIdleItem({
@@ -182,6 +208,8 @@
                     console.log(res);
                     if(res.status_code===1){
                         this.idleItemInfo.idleStatus=status;
+                    }else {
+                        this.$message.error(res.msg)
                     }
                 });
             },
@@ -193,6 +221,8 @@
                     console.log(res);
                     if(res.status_code===1){
                         this.$router.push({path: '/order', query: {id: res.data.id}});
+                    }else {
+                        this.$message.error(res.msg)
                     }
                 }).catch(e=>{
 
@@ -210,6 +240,8 @@
                                 type: 'success'
                             });
                             this.isFavorite=false;
+                        }else {
+                            this.$message.error(res.msg)
                         }
                     }).catch(e=>{
                     })
@@ -225,11 +257,56 @@
                             });
                             this.isFavorite=true;
                             this.favoriteId=res.data;
+                        }else {
+                            this.$message.error(res.msg)
                         }
                     }).catch(e=>{
                     })
                 }
             },
+            cancelReply(){
+                this.isReply=false;
+                this.toUser=this.idleItemInfo.userId;
+                this.toMessage=null;
+                this.replyData.toUserNickname='';
+                this.replyData.toMessage='';
+            },
+            sendMessage(){
+                let content=this.messageContent.trim();
+                if(this.toUser==null){
+                    this.toUser=this.idleItemInfo.userId;
+                }
+                if(content){
+                    let contentList=content.split(/\r?\n/);
+                    let contenHtml=contentList[0];
+                    for(let i=1;i<contentList.length;i++){
+                        contenHtml+='<br>'+contentList[i];
+                    }
+                    this.$api.sendMessage({
+                        idleId:this.idleItemInfo.id,
+                        content:contenHtml,
+                        toUser:this.toUser,
+                        toMessage:this.toMessage
+                    }).then(res=>{
+                        if(res.status_code===1){
+                            this.$message({
+                                message: '留言成功！',
+                                type: 'success'
+                            });
+                            this.messageContent='';
+                            this.cancelReply();
+                            this.getAllIdleMessage();
+                        }else {
+                            this.$message.error("留言失败！"+res.msg);
+                        }
+                    }).catch(()=>{
+                        this.$message.error("留言失败！");
+                    });
+
+                }else{
+                    this.$message.error("留言为空！");
+                }
+            }
         },
     }
 </script>
@@ -315,7 +392,6 @@
         justify-content: flex-end;
     }
     .message-container-list{
-        cursor:pointer;
         min-height: 60px;
         border-top: 1px solid #eeeeee;
         display: flex;

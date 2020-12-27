@@ -4,22 +4,22 @@
         <app-body>
             <div class="message-container">
                 <div class="message-container-title">我的消息</div>
-                <div v-for="(item,index) in [1,2,3,4]" class="message-container-list" @click="toDetails">
+                <div v-for="(mes,index) in meslist" class="message-container-list" @click="toDetails(mes.idle.id)">
                     <div class="message-container-list-left">
                         <el-image
                                 style="width: 55px; height: 55px;border-radius: 5px;"
-                                src="https://pic4.zhimg.com/80/v2-0aad60bfa8d0dc1ea4315c165594e507_720w.jpg?source=1940ef5c"
+                                :src="mes.fromU.avatar"
                                 fit="cover"></el-image>
                         <div class="message-container-list-text">
-                            <div class="message-nickname">nicheng</div>
-                            <div class="message-content">哈哈哈哈哈哈哈哈哈啊啊啊啊啊啊啊啊啊啊啊啊</div>
-                            <div class="message-time">2020-11-11 20:20</div>
+                            <div class="message-nickname">{{mes.fromU.nickname}}</div>
+                            <div class="message-content">{{mes.content}}</div>
+                            <div class="message-time">{{mes.createTime}}</div>
                         </div>
                     </div>
                     <div class="message-container-list-right">
                         <el-image
                                 style="width:130px; height: 90px;"
-                                src="https://pic4.zhimg.com/80/v2-0aad60bfa8d0dc1ea4315c165594e507_720w.jpg?source=1940ef5c"
+                                :src="mes.idle.imgUrl"
                                 fit="contain"></el-image>
                     </div>
                 </div>
@@ -43,12 +43,24 @@
         },
         data(){
             return{
-
+                meslist:[]
             };
         },
+        created(){
+            this.$api.getAllMyMessage().then(res=>{
+                console.log(res);
+                if(res.status_code===1){
+                    for(let i=0;i<res.data.length;i++){
+                        let imgList=JSON.parse(res.data[i].idle.pictureList);
+                        res.data[i].idle.imgUrl=imgList?imgList[0]:'';
+                    }
+                    this.meslist=res.data;
+                }
+            })
+        },
         methods:{
-            toDetails(){
-                this.$router.push({path: '/details'});
+            toDetails(id){
+                this.$router.push({path: '/details',query:{id:id}});
             }
         }
     }

@@ -480,6 +480,8 @@
                             this.dataList[0].splice(index,1);
                             item.idleStatus=2;
                             this.dataList[1].unshift(item);
+                        }else {
+                            this.$message.error(res.msg)
                         }
                     });
                 }else if(activeName==='2'){
@@ -490,6 +492,8 @@
                         console.log(res);
                         if(res.status_code===1){
                             this.dataList[1].splice(index,1);
+                        }else {
+                            this.$message.error(res.msg)
                         }
                     });
                 }else if(activeName==='3'){
@@ -503,6 +507,8 @@
                                 type: 'success'
                             });
                             this.dataList[2].splice(index,1);
+                        }else {
+                            this.$message.error(res.msg)
                         }
                     }).catch(e=>{
                     })
