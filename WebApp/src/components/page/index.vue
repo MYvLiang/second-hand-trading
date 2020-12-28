@@ -57,7 +57,7 @@
                         :current-page.sync="currentPage"
                         :page-size="8"
                         layout="prev, pager, next, jumper"
-                        :total="totalItem*20">
+                        :total="totalItem">
                 </el-pagination>
             </div>
             </div>
@@ -93,9 +93,9 @@
             $route(to,from){
                 this.labelName=to.query.labelName;
                 let val=parseInt(to.query.page)?parseInt(to.query.page):1;
-                let totalPage=parseInt(this.totalItem/8)+1;
-                val=parseInt(val%totalPage);
-                val=val===0?totalPage:val;
+                // let totalPage=parseInt(this.totalItem/8)+1;
+                // val=parseInt(val%totalPage);
+                // val=val===0?totalPage:val;
                 this.currentPage=parseInt(to.query.page)?parseInt(to.query.page):1;
                 this.findIdleTiem(val);
             }
