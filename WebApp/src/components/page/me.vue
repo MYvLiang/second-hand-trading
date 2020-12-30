@@ -93,7 +93,7 @@
                                     <div class="idle-container-list-title">
                                         {{item.idleName}}
                                     </div>
-                                    <div class="idle-container-list-idle-details">
+                                    <div class="idle-container-list-idle-details" v-html="item.idleDetails">
                                         {{item.idleDetails}}
                                     </div>
                                     <div class="idle-container-list-idle-time">{{item.timeStr}}</div>
@@ -102,7 +102,7 @@
                                         <div class="idle-prive">￥{{item.idlePrice}}
                                             {{(activeName==='4'||activeName==='5')?orderStatus[item.orderStatus]:''}}
                                         </div>
-                                        <el-button v-if="activeName!=='4'&&activeName!=='5'" type="danger" size="mini"
+                                        <el-button v-if="activeName!=='4'&&activeName!=='5'" type="danger" size="mini" slot="reference"
                                                    plain @click.stop="handle(activeName,item,index)">{{handleName[activeName-1]}}
                                         </el-button>
                                     </div>
@@ -470,49 +470,57 @@
             },
             handle(activeName,item,index) {
                 console.log(activeName,item,index);
-                if(activeName==='1'){
-                    this.$api.updateIdleItem({
-                        id:item.id,
-                        idleStatus:2
-                    }).then(res=>{
-                        console.log(res);
-                        if(res.status_code===1){
-                            this.dataList[0].splice(index,1);
-                            item.idleStatus=2;
-                            this.dataList[1].unshift(item);
-                        }else {
-                            this.$message.error(res.msg)
-                        }
-                    });
-                }else if(activeName==='2'){
-                    this.$api.updateIdleItem({
-                        id:item.id,
-                        idleStatus:0
-                    }).then(res=>{
-                        console.log(res);
-                        if(res.status_code===1){
-                            this.dataList[1].splice(index,1);
-                        }else {
-                            this.$message.error(res.msg)
-                        }
-                    });
-                }else if(activeName==='3'){
-                    this.$api.deleteFavorite({
-                        id: item.favoriteId
-                    }).then(res=>{
-                        console.log(res);
-                        if(res.status_code===1){
-                            this.$message({
-                                message: '已取消收藏！',
-                                type: 'success'
-                            });
-                            this.dataList[2].splice(index,1);
-                        }else {
-                            this.$message.error(res.msg)
-                        }
-                    }).catch(e=>{
-                    })
-                }
+                this.$confirm('是否确认？', '提示', {
+                    confirmButtonText: '确认',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    if(activeName==='1'){
+                        this.$api.updateIdleItem({
+                            id:item.id,
+                            idleStatus:2
+                        }).then(res=>{
+                            console.log(res);
+                            if(res.status_code===1){
+                                this.dataList[0].splice(index,1);
+                                item.idleStatus=2;
+                                this.dataList[1].unshift(item);
+                            }else {
+                                this.$message.error(res.msg)
+                            }
+                        });
+                    }else if(activeName==='2'){
+                        this.$api.updateIdleItem({
+                            id:item.id,
+                            idleStatus:0
+                        }).then(res=>{
+                            console.log(res);
+                            if(res.status_code===1){
+                                this.dataList[1].splice(index,1);
+                            }else {
+                                this.$message.error(res.msg)
+                            }
+                        });
+                    }else if(activeName==='3'){
+                        this.$api.deleteFavorite({
+                            id: item.favoriteId
+                        }).then(res=>{
+                            console.log(res);
+                            if(res.status_code===1){
+                                this.$message({
+                                    message: '已取消收藏！',
+                                    type: 'success'
+                                });
+                                this.dataList[2].splice(index,1);
+                            }else {
+                                this.$message.error(res.msg)
+                            }
+                        }).catch(e=>{
+                        })
+                    }
+                }).catch(() => {
+                });
+
             },
             fileHandleSuccess(response, file, fileList) {
                 console.log("file:", response, file, fileList);

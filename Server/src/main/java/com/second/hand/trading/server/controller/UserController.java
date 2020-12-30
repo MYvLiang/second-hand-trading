@@ -24,15 +24,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    /**
-     * 获取所有用户信息
-     *
-     * @return
-     */
-    @GetMapping("getAll")
-    public ResultVo getAllUsers() {
-        return ResultVo.success(userService.getUserList());
-    }
 
     /**
      * 注册账号

@@ -19,10 +19,6 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserDao userDao;
 
-    public List<UserModel> getUserList(){
-        return userDao.getUserList();
-    }
-
     public UserModel getUser(Long id){
         return userDao.selectByPrimaryKey(id);
     }

@@ -53,6 +53,12 @@
                     for(let i=0;i<res.data.length;i++){
                         let imgList=JSON.parse(res.data[i].idle.pictureList);
                         res.data[i].idle.imgUrl=imgList?imgList[0]:'';
+                        let contentList=res.data[i].content.split('<br>');
+                        let contenHtml=contentList[0];
+                        for(let i=1;i<contentList.length;i++){
+                            contenHtml+='  '+contentList[i];
+                        }
+                        res.data[i].content=contenHtml;
                     }
                     this.meslist=res.data;
                 }
