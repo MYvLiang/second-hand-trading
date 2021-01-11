@@ -1,0 +1,30 @@
+*.js linguist-language=Java
+# Java sources
+*.java          text diff=java
+*.gradle        text diff=java
+*.gradle.kts    text diff=java
+
+# These files are text and should be normalized (Convert crlf => lf)
+*.css           text diff=css
+*.df            text
+*.htm           text diff=html
+*.html          text diff=html
+*.js            text diff=java
+*.jsp           text diff=java
+*.jspf          text diff=java
+*.jspx          text diff=java
+*.properties    text
+*.tld           text
+*.tag           text
+*.tagx          text
+*.xml           text diff=java
+
+# These files are binary and should be left untouched
+# (binary is a macro for -text -diff)
+*.class         binary
+*.dll           binary
+*.ear           binary
+*.jar           binary
+*.so            binary
+*.war           binary
+*.jks           binary
