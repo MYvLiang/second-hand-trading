@@ -1,3 +1,4 @@
+*.js linguist-language=Java
 # Java sources
 *.java          text diff=java
 *.gradle        text diff=java
@@ -8,7 +9,7 @@
 *.df            text
 *.htm           text diff=html
 *.html          text diff=html
-*.js            text
+*.js            text diff=java
 *.jsp           text diff=java
 *.jspf          text diff=java
 *.jspx          text diff=java
