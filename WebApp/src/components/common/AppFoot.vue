@@ -1,6 +1,6 @@
 <template>
     <div class="foot-container">
-        <div class="author">二手交易平台 @18大数据3班 蒙宇亮</div>
+        <div class="author">二手交易平台 <a target="_blank" href="https://github.com/MYvLiang/second-hand-trading">@MYvLiang</a></div>
     </div>
 </template>
 

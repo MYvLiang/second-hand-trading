@@ -1,5 +1,9 @@
 # 二手交易平台
 
+预览地址：[https://shinytengxvnyun.cn/](https://shinytengxvnyun.cn/)
+
+1M宽带，网速较慢，请轻点。
+
 ## 用户登录和注册功能
 
 ![img](images/README/wps1.jpg) 
