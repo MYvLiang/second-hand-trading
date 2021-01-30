@@ -51,7 +51,7 @@
                     <div class="release-idle-container-picture">
                         <div class="release-idle-container-picture-title">上传闲置照片</div>
                         <el-upload
-                                action="https://shinytengxvnyun.cn/file/"
+                                action="http://localhost:8080/file/"
                                 :on-preview="fileHandlePreview"
                                 :on-remove="fileHandleRemove"
                                 :on-success="fileHandleSuccess"

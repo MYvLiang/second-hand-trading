@@ -19,7 +19,6 @@ public class FileServiceImpl implements FileService {
     @Value("${userFilePath}")
     private String userFilePath;
 
-    @Transactional(rollbackFor = Exception.class)
     public boolean uploadFile(MultipartFile multipartFile,String fileName)throws IOException {
         File fileDir = new File(userFilePath);
         if (!fileDir.exists()) {

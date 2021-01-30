@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * userId建索引
+ * idleId建索引
+ * to_user建索引
  * @author myl
  * @create 2020-12-26  22:37
  */
@@ -31,18 +34,40 @@ public class MessageServiceImpl implements MessageService {
     @Resource
     private IdleItemDao idleItemDao;
 
+    /**
+     * 增加一条留言
+     * @param messageModel
+     * @return
+     */
     public boolean addMessage(MessageModel messageModel){
         return messageDao.insert(messageModel)==1;
     }
 
+    /**
+     * 删除一条留言，未做用户身份验证
+     * @param id
+     * @return
+     */
     public boolean deleteMessage(Long id){
         return messageDao.deleteByPrimaryKey(id)==1;
     }
 
+    /**
+     * 获取一条留言
+     * @param id
+     * @return
+     */
     public MessageModel getMessage(Long id){
         return messageDao.selectByPrimaryKey(id);
     }
 
+    /**
+     * 获取一个用户收到的所有留言，未做分页查询
+     * 同时查询出用户的信息和闲置的信息
+     * userId建索引
+     * @param userId
+     * @return
+     */
     public List<MessageModel> getAllMyMessage(Long userId){
         List<MessageModel> list=messageDao.getMyMessage(userId);
         if(list.size()>0){
@@ -75,6 +100,13 @@ public class MessageServiceImpl implements MessageService {
         return list;
     }
 
+    /**
+     * 查询一个闲置下的所有留言，未做分页
+     * 同时查出发送者和接收者的信息
+     * idleId建索引
+     * @param idleId
+     * @return
+     */
     public List<MessageModel> getAllIdleMessage(Long idleId){
         List<MessageModel> list=messageDao.getIdleMessage(idleId);
         if(list.size()>0){

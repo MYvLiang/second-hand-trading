@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 收藏的增删改查
+ * user_id建索引
  * @author myl
  * @create 2020-12-26  20:23
  */
@@ -28,29 +30,43 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Resource
     private IdleItemDao idleItemDao;
 
+    /**
+     * 新增收藏
+     * @param favoriteModel
+     * @return
+     */
     public boolean addFavorite(FavoriteModel favoriteModel){
-        int n=0;
-        try {
-            n=favoriteDao.insert(favoriteModel);
-        }catch (Exception ignored){
-        }
-        return n==1;
+        return favoriteDao.insert(favoriteModel)==1;
     }
 
+    /**
+     * 删除收藏
+     * @param id
+     * @return
+     */
     public boolean deleteFavorite(Long id){
         return favoriteDao.deleteByPrimaryKey(id)==1;
     }
 
+    /**
+     * 判断用户是否收藏某个闲置
+     * user_id建索引
+     * @param userId
+     * @param idleId
+     * @return
+     */
     public Integer isFavorite(Long userId,Long idleId){
         return favoriteDao.checkFavorite(userId,idleId);
     }
 
+    /**
+     * 查询一个用户的所有收藏
+     * 关联查询，没有用join，通过where in查询关联的闲置信息
+     * @param userId
+     * @return
+     */
     public List<FavoriteModel> getAllFavorite(Long userId){
         List<FavoriteModel> list=favoriteDao.getMyFavorite(userId);
-        if(list.size()>0){
-            List<Long> idleIdList=new ArrayList<>();
-
-        }
         if(list.size()>0){
             List<Long> idleIdList=new ArrayList<>();
             for(FavoriteModel i:list){

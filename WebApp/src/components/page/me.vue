@@ -8,7 +8,7 @@
                     <div class="user-info-details">
 
                         <el-upload
-                                action="https://shinytengxvnyun.cn/file/"
+                                action="http://localhost:8080/file/"
                                 :on-success="fileHandleSuccess"
                                 :file-list="imgFileList"
                                 accept="image/*"

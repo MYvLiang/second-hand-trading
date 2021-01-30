@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 闲置信息的增删改查
+ * user_id建索引
  * @author myl
  * @create 2020-12-23  17:46
  */
@@ -27,10 +29,20 @@ public class IdleItemServiceImpl implements IdleItemService {
     @Resource
     private UserDao userDao;
 
+    /**
+     * 发布闲置
+     * @param idleItemModel
+     * @return
+     */
     public boolean addIdleItem(IdleItemModel idleItemModel) {
         return idleItemDao.insert(idleItemModel) == 1;
     }
 
+    /**
+     * 查询闲置信息，同时查出发布者的信息
+     * @param id
+     * @return
+     */
     public IdleItemModel getIdleItem(Long id) {
         IdleItemModel idleItemModel=idleItemDao.selectByPrimaryKey(id);
         if(idleItemModel!=null){
@@ -39,10 +51,24 @@ public class IdleItemServiceImpl implements IdleItemService {
         return idleItemModel;
     }
 
+    /**
+     * 查询用户发布的所有闲置
+     * user_id建索引
+     * @param userId
+     * @return
+     */
     public List<IdleItemModel> getAllIdelItem(Long userId) {
         return idleItemDao.getAllIdleItem(userId);
     }
 
+    /**
+     * 搜索，分页
+     * 同时查出闲置发布者的信息
+     * @param findValue
+     * @param page
+     * @param nums
+     * @return
+     */
     public PageVo<IdleItemModel> findIdleItem(String findValue, int page, int nums) {
         List<IdleItemModel> list=idleItemDao.findIdleItem(findValue, (page - 1) * nums, nums);
         if(list.size()>0){
@@ -63,6 +89,14 @@ public class IdleItemServiceImpl implements IdleItemService {
         return new PageVo<>(list,count);
     }
 
+    /**
+     * 分类查询，分页
+     * 同时查出闲置发布者的信息，代码结构与上面的类似，可封装优化，或改为join查询
+     * @param idleLabel
+     * @param page
+     * @param nums
+     * @return
+     */
     public PageVo<IdleItemModel> findIdleItemByLable(int idleLabel, int page, int nums) {
         List<IdleItemModel> list=idleItemDao.findIdleItemByLable(idleLabel, (page - 1) * nums, nums);
         if(list.size()>0){
@@ -83,6 +117,11 @@ public class IdleItemServiceImpl implements IdleItemService {
         return new PageVo<>(list,count);
     }
 
+    /**
+     * 更新闲置信息
+     * @param idleItemModel
+     * @return
+     */
     public boolean updateIdleItem(IdleItemModel idleItemModel){
         return idleItemDao.updateByPrimaryKeySelective(idleItemModel)==1;
     }

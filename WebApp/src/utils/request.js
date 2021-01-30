@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const service = axios.create({
     timeout: 5000,
-    baseURL:  'https://shinytengxvnyun.cn',
+    baseURL:  'http://localhost:8080',
     withCredentials:  true
 });
 
