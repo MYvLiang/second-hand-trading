@@ -89,7 +89,8 @@ public class OrderServiceImpl implements OrderService {
         if(idleItemDao.updateByPrimaryKeySelective(idleItem)==1){
             if(orderDao.insert(orderModel)==1){
                 orderModel.setOrderStatus((byte) 4);
-                OrderTaskHandler.addOrder(new OrderTask(orderModel,60*30));
+                //半小时未支付则取消订单
+                OrderTaskHandler.addOrder(new OrderTask(orderModel,30*60));
                 return true;
             }else {
                 new RuntimeException();
@@ -125,6 +126,9 @@ public class OrderServiceImpl implements OrderService {
         if(orderModel.getOrderStatus()==4){
             //取消订单,需要优化，减少数据库查询次数
             OrderModel o=orderDao.selectByPrimaryKey(orderModel.getId());
+            if(o.getOrderStatus()!=0){
+                return false;
+            }
             IdleItemModel idleItemModel=idleItemDao.selectByPrimaryKey(o.getIdleId());
             if(idleItemModel.getIdleStatus()==2){
                 IdleItemModel idleItem=new IdleItemModel();
@@ -221,5 +225,9 @@ public class OrderServiceImpl implements OrderService {
         }
         int count=orderDao.countAllOrder();
         return new PageVo<>(list,count);
+    }
+
+    public boolean deleteOrder(long id){
+        return orderDao.deleteByPrimaryKey(id)==1;
     }
 }

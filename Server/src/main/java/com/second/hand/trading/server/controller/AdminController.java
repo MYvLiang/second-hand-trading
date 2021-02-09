@@ -138,6 +138,18 @@ public class AdminController {
         return ResultVo.success(orderService.getAllOrder(p,n));
     }
 
+    @GetMapping("deleteOrder")
+    public ResultVo deleteOrder(HttpSession session,
+                              @RequestParam("id") @NotNull @NotEmpty Long id){
+        if(session.getAttribute("admin")==null){
+            return ResultVo.fail(ErrorMsg.COOKIE_ERROR);
+        }
+        if(orderService.deleteOrder(id)){
+            return ResultVo.success();
+        }
+        return ResultVo.fail(ErrorMsg.SYSTEM_ERROR);
+    }
+
     @GetMapping("userList")
     public ResultVo userList(HttpSession session,
                              @RequestParam(value = "page",required = false) Integer page,

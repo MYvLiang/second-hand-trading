@@ -254,6 +254,13 @@ const api = {
             params: query
         });
     },
+    deleteOrder(query) {
+        return request({
+            url: '/admin/deleteOrder',
+            method: 'get',
+            params: query
+        });
+    },
     getUserData(query) {
         return request({
             url: '/admin/userList',

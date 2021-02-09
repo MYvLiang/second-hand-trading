@@ -47,4 +47,6 @@ public interface OrderService {
     List<OrderModel> getMySoldIdle(Long userId);
 
     PageVo<OrderModel> getAllOrder(int page, int nums);
+
+    boolean deleteOrder(long id);
 }

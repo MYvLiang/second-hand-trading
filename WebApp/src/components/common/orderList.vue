@@ -58,6 +58,14 @@
                     label="支付时间"
                     show-overflow-tooltip>
             </el-table-column>
+            <el-table-column label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="deleteOrder(scope.$index)">删除</el-button>
+                </template>
+            </el-table-column>
         </el-table>
         <div class="block">
             <el-pagination
@@ -95,6 +103,20 @@
                     console.log(e)
                 })
             },
+            deleteOrder(index){
+                this.$api.deleteOrder({
+                    id:this.Order[index].id
+                }).then(res=>{
+                    if(res.status_code==1){
+                        this.getOrder();
+                    }else {
+                        this.$message.error(res.msg)
+                    }
+
+                }).catch(e => {
+                    console.log(e)
+                })
+            },
             handleCurrentChange(val) {
                 this.nowPage = val;
                 this.getOrder();
@@ -106,7 +128,7 @@
                 nowPage: 1,
                 total: 0,
                 paymentStatus:['未支付','已支付'],
-                orderStatus:['待支付','待发货','待收货','已完成','已取消'],
+                orderStatus:['待付款','待发货','待收货','已完成','已取消'],
                 Order: []
             }
         },

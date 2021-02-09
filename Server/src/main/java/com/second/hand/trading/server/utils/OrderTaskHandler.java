@@ -1,10 +1,7 @@
 package com.second.hand.trading.server.utils;
 
-import com.second.hand.trading.server.dao.IdleItemDao;
-import com.second.hand.trading.server.dao.OrderDao;
 import com.second.hand.trading.server.service.OrderService;
 
-import javax.annotation.Resource;
 import java.util.concurrent.DelayQueue;
 
 /**
@@ -24,8 +21,12 @@ public class OrderTaskHandler {
                 if(orderService!=null&&delayQueue.size() >0){
                     OrderTask orderTask = delayQueue.poll();
                     if (orderTask != null) {
-                        orderService.updateOrder(orderTask.getOrderModel());
-                        System.out.println("成功取消："+orderTask.getOrderModel());
+                        if(orderService.updateOrder(orderTask.getOrderModel())){
+                            System.out.println("成功取消订单："+orderTask.getOrderModel());
+                        }else {
+                            System.out.println("取消任务："+orderTask.getOrderModel());
+                        }
+
                     }
                 }
             }
