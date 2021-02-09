@@ -17,6 +17,10 @@ public interface OrderDao {
 
     List<OrderModel> getMyOrder(Long userId);
 
+    List<OrderModel> getAllOrder(int begin, int nums);
+
+    int countAllOrder();
+
     List<OrderModel> findOrderByIdleIdList(List<Long> idleIdList);
 
     int updateByPrimaryKeySelective(OrderModel record);

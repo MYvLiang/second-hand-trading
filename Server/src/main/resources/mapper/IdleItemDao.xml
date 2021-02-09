@@ -37,6 +37,10 @@
     select COUNT(*) from sh_idle_item
     where idle_label = #{idleLabel} and idle_status = 1
   </select>
+  <select id="countIdleItemByStatus"  resultType="int">
+    select COUNT(*) from sh_idle_item
+    where idle_status = #{status}
+  </select>
   <select id="findIdleItem" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -48,6 +52,12 @@
     <include refid="Base_Column_List" />
     from sh_idle_item
     where idle_label = #{idleLabel}  and idle_status = 1 order by id desc limit #{begin}, #{nums}
+  </select>
+  <select id="getIdleItemByStatus" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sh_idle_item
+    where idle_status = #{status} order by id desc limit #{begin}, #{nums}
   </select>
   <select id="findIdleByList" resultMap="BaseResultMap">
     select
@@ -161,7 +171,7 @@
         idle_status = #{idleStatus,jdbcType=TINYINT},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT} and user_id = #{userId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.second.hand.trading.server.model.IdleItemModel">
     update sh_idle_item

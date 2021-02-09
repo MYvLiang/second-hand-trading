@@ -21,9 +21,13 @@ public interface IdleItemDao {
 
     int countIdleItemByLable(int idleLabel);
 
+    int countIdleItemByStatus(int status);
+
     List<IdleItemModel> findIdleItem(String findValue, int begin, int nums);
 
     List<IdleItemModel> findIdleItemByLable(int idleLabel, int begin, int nums);
+
+    List<IdleItemModel> getIdleItemByStatus(int status, int begin, int nums);
 
     int updateByPrimaryKeySelective(IdleItemModel record);
 

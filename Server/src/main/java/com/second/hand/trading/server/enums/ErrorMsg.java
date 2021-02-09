@@ -8,6 +8,7 @@ package com.second.hand.trading.server.enums;
 public enum ErrorMsg {
 
     ACCOUNT_EXIT("用户已存在"),
+    ACCOUNT_Ban("账号已被封禁"),
     ACCOUNT_NOT_EXIT("用户不存在"),
     PASSWORD_IS_NOT_SAME("密码不一致"),
     PASSWORD_RESET_ERROR("修改密码失败"),
@@ -23,7 +24,7 @@ public enum ErrorMsg {
     OPERAT_FREQUENCY("操作频繁 稍后重试"),
     MISSING_PARAMETER("缺少参数"),
     COOKIE_ERROR("请重新登录"),
-    EMAIL_LOGIN_ERROR("登录失败 账号密码错误"),
+    EMAIL_LOGIN_ERROR("登录失败 账号或密码错误"),
     JSON_READ_ERROR("json参数解析错误"),
     FORM_NUMBER_ERROR("表单id错误"),
     REPEAT_COMMIT_ERROR("请勿重复提交"),

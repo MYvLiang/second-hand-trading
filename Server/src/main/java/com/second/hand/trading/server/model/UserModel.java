@@ -38,6 +38,8 @@ public class UserModel implements Serializable {
      */
     private Date signInTime;
 
+    private Byte userStatus;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -86,6 +88,14 @@ public class UserModel implements Serializable {
 
     public void setSignInTime(Date signInTime) {
         this.signInTime = signInTime;
+    }
+
+    public Byte getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(Byte userStatus) {
+        this.userStatus = userStatus;
     }
 
     @Override

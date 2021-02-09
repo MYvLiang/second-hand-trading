@@ -64,6 +64,16 @@ export default new Router({
             meta: { title: '注册 | 二手交易平台' }
         },
         {
+            path: '/login-admin',
+            component: () => import('../components/page/login-admin.vue'),
+            meta: { title: '后台登陆' }
+        },
+        {
+            path: '/platform-admin',
+            component: () => import('../components/page/platform-admin.vue'),
+            meta: { title: '后台管理' }
+        },
+        {
             path: '*',
             redirect: '/'
         }

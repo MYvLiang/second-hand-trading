@@ -7,6 +7,7 @@ import com.second.hand.trading.server.model.OrderModel;
 import com.second.hand.trading.server.service.OrderService;
 import com.second.hand.trading.server.utils.OrderTask;
 import com.second.hand.trading.server.utils.OrderTaskHandler;
+import com.second.hand.trading.server.vo.PageVo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -200,5 +201,25 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return orderList;
+    }
+
+    public PageVo<OrderModel> getAllOrder(int page, int nums){
+        List<OrderModel> list=orderDao.getAllOrder((page-1)*nums,nums);
+        if(list.size()>0){
+            List<Long> idleIdList=new ArrayList<>();
+            for(OrderModel i:list){
+                idleIdList.add(i.getIdleId());
+            }
+            List<IdleItemModel> idleItemModelList=idleItemDao.findIdleByList(idleIdList);
+            Map<Long,IdleItemModel> map=new HashMap<>();
+            for(IdleItemModel idle:idleItemModelList){
+                map.put(idle.getId(),idle);
+            }
+            for(OrderModel i:list){
+                i.setIdleItem(map.get(i.getIdleId()));
+            }
+        }
+        int count=orderDao.countAllOrder();
+        return new PageVo<>(list,count);
     }
 }

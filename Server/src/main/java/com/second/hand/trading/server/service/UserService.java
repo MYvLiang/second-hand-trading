@@ -1,6 +1,7 @@
 package com.second.hand.trading.server.service;
 
 import com.second.hand.trading.server.model.UserModel;
+import com.second.hand.trading.server.vo.PageVo;
 
 import java.util.List;
 
@@ -47,4 +48,6 @@ public interface UserService {
      * @return
      */
     boolean updatePassword(String newPassword, String oldPassword,Long id);
+
+    PageVo<UserModel> getUserByStatus(int status, int page , int nums);
 }

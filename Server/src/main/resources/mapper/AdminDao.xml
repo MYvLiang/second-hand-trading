@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.second.hand.trading.server.dao.AdminDao">
+  <resultMap id="BaseResultMap" type="com.second.hand.trading.server.model.AdminModel">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="account_number" jdbcType="VARCHAR" property="accountNumber" />
+    <result column="admin_password" jdbcType="VARCHAR" property="adminPassword" />
+    <result column="admin_name" jdbcType="VARCHAR" property="adminName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, account_number, admin_password, admin_name
+  </sql>
+  <select id="login" resultMap="BaseResultMap">
+    select id, account_number, admin_name
+    from sh_admin
+    where account_number = #{accountNumber} and admin_password = #{adminPassword}
+  </select>
+  <select id="getList" resultMap="BaseResultMap">
+    select id, account_number, admin_name
+    from sh_admin
+    limit #{begin}, #{nums}
+  </select>
+  <select id="getCount" resultType="int">
+    select count(*) from sh_admin
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sh_admin
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sh_admin
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.second.hand.trading.server.model.AdminModel" useGeneratedKeys="true">
+    insert into sh_admin (account_number, admin_password, admin_name
+      )
+    values (#{accountNumber,jdbcType=VARCHAR}, #{adminPassword,jdbcType=VARCHAR}, #{adminName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.second.hand.trading.server.model.AdminModel" useGeneratedKeys="true">
+    insert into sh_admin
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="accountNumber != null">
+        account_number,
+      </if>
+      <if test="adminPassword != null">
+        admin_password,
+      </if>
+      <if test="adminName != null">
+        admin_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="accountNumber != null">
+        #{accountNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="adminPassword != null">
+        #{adminPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="adminName != null">
+        #{adminName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.second.hand.trading.server.model.AdminModel">
+    update sh_admin
+    <set>
+      <if test="accountNumber != null">
+        account_number = #{accountNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="adminPassword != null">
+        admin_password = #{adminPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="adminName != null">
+        admin_name = #{adminName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.second.hand.trading.server.model.AdminModel">
+    update sh_admin
+    set account_number = #{accountNumber,jdbcType=VARCHAR},
+      admin_password = #{adminPassword,jdbcType=VARCHAR},
+      admin_name = #{adminName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -60,8 +60,11 @@ public class UserController {
         if (null == userModel) {
             return ResultVo.fail(ErrorMsg.EMAIL_LOGIN_ERROR);
         }
+        if(userModel.getUserStatus()!=null&&userModel.getUserStatus().equals((byte) 1)){
+            return ResultVo.fail(ErrorMsg.ACCOUNT_Ban);
+        }
         Cookie cookie = new Cookie("shUserId", String.valueOf(userModel.getId()));
-        cookie.setMaxAge(60 * 60 * 24 * 30);
+//        cookie.setMaxAge(60 * 60 * 24 * 30);
         cookie.setPath("/");
         cookie.setHttpOnly(false);
         response.addCookie(cookie);

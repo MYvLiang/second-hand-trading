@@ -125,4 +125,24 @@ public class IdleItemServiceImpl implements IdleItemService {
     public boolean updateIdleItem(IdleItemModel idleItemModel){
         return idleItemDao.updateByPrimaryKeySelective(idleItemModel)==1;
     }
+
+    public PageVo<IdleItemModel> adminGetIdleList(int status, int page, int nums) {
+        List<IdleItemModel> list=idleItemDao.getIdleItemByStatus(status, (page - 1) * nums, nums);
+        if(list.size()>0){
+            List<Long> idList=new ArrayList<>();
+            for(IdleItemModel i:list){
+                idList.add(i.getUserId());
+            }
+            List<UserModel> userList=userDao.findUserByList(idList);
+            Map<Long,UserModel> map=new HashMap<>();
+            for(UserModel user:userList){
+                map.put(user.getId(),user);
+            }
+            for(IdleItemModel i:list){
+                i.setUser(map.get(i.getUserId()));
+            }
+        }
+        int count=idleItemDao.countIdleItemByStatus(status);
+        return new PageVo<>(list,count);
+    }
 }

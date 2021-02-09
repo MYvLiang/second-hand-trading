@@ -22,6 +22,14 @@ public interface UserDao {
 
     List<UserModel> findUserByList(List<Long> idList);
 
+    List<UserModel> getNormalUser(int begin, int nums);
+
+    List<UserModel> getBanUser(int begin, int nums);
+
+    int countNormalUser();
+
+    int countBanUser();
+
     int updateByPrimaryKeySelective(UserModel record);
 
     int updateByPrimaryKey(UserModel record);

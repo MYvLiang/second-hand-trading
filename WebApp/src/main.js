@@ -14,6 +14,12 @@ let globalData={
         nickname:''
     }
 };
+let sta={
+    isLogin:false,
+    adminName:''
+};
+Vue.prototype.$sta = sta;
+
 Vue.prototype.$globalData=globalData;
 
 Vue.config.productionTip = false;

@@ -8,12 +8,13 @@
     <result column="nickname" jdbcType="VARCHAR" property="nickname" />
     <result column="avatar" jdbcType="VARCHAR" property="avatar" />
     <result column="sign_in_time" jdbcType="TIMESTAMP" property="signInTime" />
+    <result column="user_status" jdbcType="TINYINT" property="userStatus" />
   </resultMap>
   <sql id="Base_Column_List">
-    account_number, nickname, avatar, sign_in_time
+    id, account_number, nickname, avatar, sign_in_time, user_status
   </sql>
   <select id="userLogin" resultMap="BaseResultMap">
-    select id, account_number, nickname, avatar, sign_in_time
+    select id, account_number, nickname, avatar, sign_in_time, user_status
     from sh_user
     where account_number = #{accountNumber} and user_password = #{userPassword}
   </select>
@@ -23,10 +24,28 @@
     from sh_user
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="countNormalUser" resultType="int">
+    select count(*) from sh_user
+    where user_status is null or user_status = 0
+  </select>
+  <select id="countBanUser" resultType="int">
+    select count(*) from sh_user
+    where user_status = 1
+  </select>
   <select id="getUserList" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from sh_user
+  </select>
+  <select id="getNormalUser" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sh_user where user_status is null or user_status = 0 order by id desc limit #{begin}, #{nums}
+  </select>
+  <select id="getBanUser" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sh_user where user_status = 1 order by id desc limit #{begin}, #{nums}
   </select>
   <select id="findUserByList" resultMap="BaseResultMap">
     select id,nickname, avatar, sign_in_time
@@ -99,6 +118,9 @@
       </if>
       <if test="signInTime != null">
         sign_in_time = #{signInTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userStatus != null">
+        user_status = #{userStatus},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

@@ -3,6 +3,7 @@ package com.second.hand.trading.server.service.impl;
 import com.second.hand.trading.server.dao.UserDao;
 import com.second.hand.trading.server.model.UserModel;
 import com.second.hand.trading.server.service.UserService;
+import com.second.hand.trading.server.vo.PageVo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -66,4 +67,18 @@ public class UserServiceImpl implements UserService {
     public boolean updatePassword(String newPassword, String oldPassword,Long id){
         return userDao.updatePassword(newPassword,oldPassword,id)==1;
     }
+
+    public PageVo<UserModel> getUserByStatus(int status,int page ,int nums){
+        List<UserModel> list;
+        int count=0;
+        if(status==0){
+            count=userDao.countNormalUser();
+            list=userDao.getNormalUser((page-1)*nums, nums);
+        }else {
+            count=userDao.countBanUser();
+            list=userDao.getBanUser((page-1)*nums, nums);
+        }
+        return new PageVo<>(list,count);
+    }
+
 }

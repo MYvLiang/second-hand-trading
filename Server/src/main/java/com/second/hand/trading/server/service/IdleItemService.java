@@ -56,4 +56,6 @@ public interface IdleItemService {
      * @return
      */
     boolean updateIdleItem(IdleItemModel idleItemModel);
+
+    PageVo<IdleItemModel> adminGetIdleList(int status, int page, int nums) ;
 }
