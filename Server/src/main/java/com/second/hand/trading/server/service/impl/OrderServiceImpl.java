@@ -93,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
                 OrderTaskHandler.addOrder(new OrderTask(orderModel,30*60));
                 return true;
             }else {
-                new RuntimeException();
+                throw new RuntimeException();
             }
         }
         return false;
@@ -139,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
                     if(idleItemDao.updateByPrimaryKeySelective(idleItem)==1){
                         return true;
                     }else {
-                        new RuntimeException();
+                        throw new RuntimeException();
                     }
                 }
                 return false;
@@ -147,7 +147,7 @@ public class OrderServiceImpl implements OrderService {
                 if(orderDao.updateByPrimaryKeySelective(orderModel)==1){
                     return true;
                 }else {
-                    new RuntimeException();
+                    throw new RuntimeException();
                 }
             }
         }
